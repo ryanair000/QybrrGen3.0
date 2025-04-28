@@ -7,3 +7,4 @@ export default async function IndexPage() {
 }
 
 // export const revalidate = 60;
+export const revalidate = 10; // Revalidate data at most every 10 seconds

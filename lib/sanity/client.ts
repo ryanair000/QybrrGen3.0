@@ -30,6 +30,9 @@ const client = projectId
   ? createClient({ projectId, dataset, apiVersion, useCdn })
   : null;
 
+// Export the client instance
+export { client };
+
 export const fetcher = async ([query, params]) => {
   return client ? client.fetch(query, params) : [];
 };
@@ -47,8 +50,22 @@ export const fetcher = async ([query, params]) => {
 
 export async function getAllPosts() {
   if (client) {
-    return (await client.fetch(postquery)) || [];
+    console.log("getAllPosts - Using config:", {
+      projectId: client.config().projectId,
+      dataset: client.config().dataset,
+      apiVersion: client.config().apiVersion,
+      useCdn: client.config().useCdn
+    });
+    try {
+      const posts = await client.fetch(postquery);
+      console.log("getAllPosts - Fetched data:", posts);
+      return posts || [];
+    } catch (error) {
+      console.error("getAllPosts - Error fetching data:", error);
+      return [];
+    }
   }
+  console.log("getAllPosts - Client not available");
   return [];
 }
 

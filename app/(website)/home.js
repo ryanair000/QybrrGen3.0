@@ -1,78 +1,97 @@
-import Link from "next/link";
-import Container from "@/components/container";
-import PostList from "@/components/postlist";
-import Image from "next/image";
+'use client';
 
-export default function Post({ posts }) {
-  // Assuming the first post is the featured one for now
-  // You might want to fetch a specific featured post from Sanity later
-  const featuredPost = posts?.[0];
+import React from 'react';
+import Image from "next/image";
+// import Link from 'next/link'; // Link is likely not needed here anymore
+import PostCard from '@/components/PostCard'; // Import PostCard
+
+// Remove the placeholder posts array
+// const posts = [ ... ];
+
+// Define filters based on your Sanity category titles or add logic to fetch them
+const filters = ['All', 'Music', 'Gaming', 'Graphic Design', 'Coding', 'Customer Support', 'Social Media']; // Updated the filters array
+
+export default function HomePage({ posts: initialPosts }) { // Receive posts as initialPosts
+  const [activeFilter, setActiveFilter] = React.useState('All');
+
+  // Use initialPosts directly. Handle cases where it might be undefined or null.
+  const displayPosts = initialPosts || [];
+
+  // Filter based on Sanity category title
+  const filteredPosts = displayPosts.filter(post => {
+    if (activeFilter === 'All') return true;
+    // Check if the post has categories and if the first category title matches
+    return post?.categories?.some(cat => cat.title === activeFilter);
+  });
 
   return (
-    <>
-      <Container>
-        {/* New Featured Section */}
-        <div className="relative mb-12 grid grid-cols-1 overflow-hidden rounded-lg bg-gradient-to-br from-purple-500 to-purple-600 p-8 text-white shadow-lg md:grid-cols-2 md:gap-8 md:p-12">
-          {/* Text Content */}
-          <div className="z-10">
-            <p className="mb-2 text-sm font-semibold uppercase tracking-wide text-purple-100">
-              Welcome to QybrrLabs
-            </p>
-            <h1 className="mb-4 text-3xl font-extrabold leading-tight text-white md:text-4xl lg:text-5xl">
-              Where AI Meets Real-World Impact
-            </h1>
-            <p className="mb-6 text-lg text-purple-100 md:text-xl">
-              At QybrrLabs, we don&apos;t just talk about artificial intelligence—we build it, test it, and put it to work. This blog is your backstage pass to how AI is solving actual problems, minus the hype.
-            </p>
-            <Link
-              href="/archive"
-              className="inline-block rounded-md bg-white px-6 py-3 text-base font-medium text-purple-600 shadow-md transition duration-300 ease-in-out hover:bg-gray-100"
-            >
-              Explore Posts
-            </Link>
-          </div>
+    // Removed outer div, Header/Footer are now in layout
+    // Removed Header section
 
-          {/* Image Content - Adjusted for single image */}
-          <div className="relative mt-8 h-64 md:mt-0 md:h-full">
+      <main className="container mx-auto px-4 sm:px-6 lg:px-8 pt-12 pb-16"> {/* Kept main container padding */}
+        {/* Hero Section - Updated Image */}
+        <section className="mb-20 md:grid md:grid-cols-2 md:gap-12 items-center">
+          <div className="mb-10 md:mb-0">
+              {/* Updated heading */}
+              <h1 className="text-4xl sm:text-5xl font-bold leading-tight mb-5 text-black">
+                Welcome to QybrrLabs, where innovation meets AI!
+              </h1>
+              {/* Updated paragraph */}
+              <p className="text-lg text-gray-700 mb-8">
+                We're all about building next-gen SaaS solutions that supercharge your business. Our team is pushing the boundaries of what's possible with artificial intelligence to create smart, scalable tools that make things faster, easier, and more efficient. Get ready to dive into the future of tech with us!
+              </p>
+              {/* Changed button background to purple */}
+              <a href="#" className="inline-block bg-purple-600 text-white px-5 py-2.5 rounded text-base font-medium hover:bg-purple-700 transition-colors">
+                LEARN MORE
+              </a>
+          </div>
+          <div className="relative w-full aspect-video md:aspect-auto md:h-[400px] rounded-lg overflow-hidden shadow-md">
             <Image
-              src="/img/robot-ai-automation-artificial-intelligence-ai-futuristic_10221-22832.jpg" // Path to your image in public/img/
-              alt="AI Featured Image"
-              fill
-              priority
-              style={{ objectFit: 'cover' }}
-              className="rounded-md"
-              sizes="(max-width: 768px) 100vw, 50vw"
-            />
-             {/* Optional: Add a subtle overlay if needed for text contrast */}
-             {/* <div className="absolute inset-0 bg-black opacity-20 rounded-md"></div> */}
+                src="/ai.jpg" // Updated image path
+                alt="AI Hero Image" // Updated alt text
+                fill
+                className="object-cover"
+                priority
+             />
           </div>
-        </div>
+        </section>
 
-        {posts && (
-          <div className="grid gap-10 md:grid-cols-2 lg:gap-10 ">
-            {posts.slice(0, 2).map(post => (
-              <PostList
-                key={post._id}
-                post={post}
-                aspect="landscape"
-                preloadImage={true}
-              />
+        {/* Filter/Tab Section - Uses the updated filters array */}
+        <section className="mb-12 border-b border-gray-200">
+          <div className="flex space-x-1 sm:space-x-2 overflow-x-auto pb-3">
+            {filters.map((filter) => (
+              <button
+                key={filter}
+                onClick={() => setActiveFilter(filter)}
+                className={`px-3.5 py-1.5 rounded-full text-sm font-medium whitespace-nowrap transition-colors duration-150 ${
+                  activeFilter === filter
+                    ? 'bg-purple-600 text-white' /* Changed active bg to purple */
+                    : 'bg-gray-100 text-gray-600 hover:bg-gray-200 hover:text-gray-800'
+                }`}
+              >
+                {filter}
+              </button>
             ))}
           </div>
-        )}
-        <div className="mt-10 grid gap-10 md:grid-cols-2 lg:gap-10 xl:grid-cols-3 ">
-          {posts.slice(2, 14).map(post => (
-            <PostList key={post._id} post={post} aspect="square" />
-          ))}
-        </div>
-        <div className="mt-10 flex justify-center">
-          <Link
-            href="/archive"
-            className="relative inline-flex items-center gap-1 rounded-md border border-gray-300 bg-white px-3 py-2 pl-4 text-sm font-medium text-gray-500 hover:bg-gray-50 focus:z-20 disabled:pointer-events-none disabled:opacity-40 dark:border-gray-500 dark:bg-gray-800 dark:text-gray-300">
-            <span>View all Posts</span>
-          </Link>
-        </div>
-      </Container>
-    </>
+        </section>
+
+        {/* Card Grid Section */}
+        <section className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-10 ${filteredPosts.length === 0 ? 'min-h-[200px] flex items-center justify-center' : ''}`}>
+          {filteredPosts.length > 0 ? (
+            filteredPosts.map((post) => (
+              // Pass the Sanity post object to PostCard
+              // PostCard is already set up to use fields like _id, title, mainImage, categories, excerpt, publishedAt
+              <PostCard key={post._id} post={post} />
+            ))
+          ) : (
+            <p className="text-gray-500 col-span-full text-center">
+              {displayPosts.length === 0 ? "Loading posts..." : "No posts found for this filter."}
+            </p>
+          )}
+        </section>
+      </main>
+
+      // Removed Footer section
+    // Removed closing div
   );
 }

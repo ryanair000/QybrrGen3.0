@@ -1,7 +1,9 @@
 import { getSettings } from "@/lib/sanity/client";
-import Footer from "@/components/footer";
+// import Footer from "@/components/footer"; // Keep your existing Footer for now or decide which one to use
 import { urlForImage } from "@/lib/sanity/image";
-import Navbar from "@/components/navbar";
+// import Navbar from "@/components/navbar"; // Remove import for old Navbar
+import Header from "@/components/Header"; // Import the new Header
+import Footer from "@/components/Footer"; // Import the new Footer
 
 async function sharedMetaData(params) {
   const settings = await getSettings();
@@ -46,14 +48,18 @@ export async function generateMetadata({ params }) {
 }
 
 export default async function Layout({ children, params }) {
-  const settings = await getSettings();
+  const settings = await getSettings(); // Keep settings if needed by other parts or the original Footer
   return (
     <>
-      <Navbar {...settings} />
+      {/* Use the new Header component */}
+      <Header />
 
-      <div className="mt-2">{children}</div>
+      {/* Removed the mt-2 class from here, can be added to main content area if needed */}
+      <main>{children}</main>
 
-      <Footer {...settings} />
+      {/* Use the new Footer component */}
+      {/* If your original Footer used settings, you might need to adapt the new one or keep the old one */}
+      <Footer />
     </>
   );
 }
