@@ -5,7 +5,10 @@ const nextConfig = {
   images: {
     formats: ["image/avif", "image/webp"],
     dangerouslyAllowSVG: true,
-    remotePatterns: [{ hostname: "cdn.sanity.io" }]
+    remotePatterns: [
+      { hostname: "cdn.sanity.io" },
+      { hostname: "via.placeholder.com" }
+    ]
   },
   typescript: {
     // Set this to false if you want production builds to abort if there's type errors
