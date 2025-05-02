@@ -41,40 +41,48 @@ export default async function BlogPage() {
 
         {posts.length > 0 ? (
           <div className="grid grid-cols-1 gap-10 md:grid-cols-2 lg:grid-cols-3">
-            {posts.map((post) => (
-              <Link key={post._id} href={postUrl(post.slug.current)} className="group block bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 overflow-hidden">
-                {/* Post Image */}
-                {post.mainImage && (
-                  <div className="relative w-full h-48 sm:h-56 bg-gray-200">
-                    <Image
-                      src={urlForImage(post.mainImage)}
-                      alt={post.title || 'Blog post image'}
-                      layout="fill"
-                      objectFit="cover"
-                      className="transition-transform duration-300 group-hover:scale-105"
-                    />
-                  </div>
-                )}
+            {posts.map((post) => {
+              // Generate image data *before* rendering
+              const imageProps = post.mainImage ? urlForImage(post.mainImage) : undefined;
 
-                {/* Post Content */}
-                <div className="p-5">
-                  <p className="text-sm text-gray-500 mb-2">
-                    {format(new Date(post.publishedAt), 'MMMM d, yyyy')}
-                  </p>
-                  <h2 className="text-xl font-semibold text-gray-800 mb-3 group-hover:text-purple-700 line-clamp-2">
-                    {post.title}
-                  </h2>
-                  {post.excerpt && (
-                    <p className="text-gray-600 text-sm line-clamp-3 mb-4">
-                      {post.excerpt}
-                    </p>
+              return (
+                <Link key={post._id} href={postUrl(post.slug.current)} className="group block bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 overflow-hidden">
+                  {/* Post Image - Conditionally render based on imageProps */}
+                  {imageProps?.src && (
+                    <div className="relative w-full h-48 sm:h-56 bg-gray-200">
+                      <Image
+                        src={imageProps.src} // Use the src from the helper function result
+                        alt={post.title || 'Blog post image'}
+                        layout="fill"
+                        objectFit="cover"
+                        className="transition-transform duration-300 group-hover:scale-105"
+                        // Optionally pass width/height if not using layout='fill'
+                        // width={imageProps.width}
+                        // height={imageProps.height}
+                      />
+                    </div>
                   )}
-                  <span className="text-sm font-medium text-purple-600 group-hover:underline">
-                    Read more &rarr;
-                  </span>
-                </div>
-              </Link>
-            ))}
+
+                  {/* Post Content */}
+                  <div className="p-5">
+                    <p className="text-sm text-gray-500 mb-2">
+                      {format(new Date(post.publishedAt), 'MMMM d, yyyy')}
+                    </p>
+                    <h2 className="text-xl font-semibold text-gray-800 mb-3 group-hover:text-purple-700 line-clamp-2">
+                      {post.title}
+                    </h2>
+                    {post.excerpt && (
+                      <p className="text-gray-600 text-sm line-clamp-3 mb-4">
+                        {post.excerpt}
+                      </p>
+                    )}
+                    <span className="text-sm font-medium text-purple-600 group-hover:underline">
+                      Read more &rarr;
+                    </span>
+                  </div>
+                </Link>
+              );
+            })}
           </div>
         ) : (
           <p className="text-center text-gray-600">No blog posts found.</p>
