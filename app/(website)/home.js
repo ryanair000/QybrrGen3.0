@@ -2,7 +2,7 @@
 
 import React from 'react';
 import Image from "next/image";
-// import Link from 'next/link'; // Link is likely not needed here anymore
+import Link from 'next/link';
 import PostCard from '@/components/PostCard'; // Import PostCard
 
 // Remove the placeholder posts array
@@ -53,6 +53,37 @@ export default function HomePage({ posts: initialPosts }) { // Receive posts as 
                 className="object-cover"
                 priority
              />
+          </div>
+        </section>
+
+        {/* Solutions Section */}
+        <section className="py-16 bg-gradient-to-br from-purple-50 to-blue-50 rounded-lg my-16">
+          <div className="container mx-auto px-4 sm:px-6 lg:px-8 grid md:grid-cols-2 gap-12 items-center">
+            {/* Image on the left */}
+            <div className="relative w-full aspect-square md:h-[350px] rounded-lg overflow-hidden shadow-lg mx-auto md:mx-0 max-w-md">
+                <Image
+                    src="/socio.jpeg" // Using the Socio image
+                    alt="Socio App Screenshot"
+                    fill
+                    className="object-cover"
+                />
+            </div>
+            {/* Text content on the right */}
+            <div className="text-center md:text-left">
+                <h2 className="text-sm font-semibold text-purple-600 uppercase tracking-wide mb-2">Featured Solution</h2>
+                <h3 className="text-3xl sm:text-4xl font-bold text-gray-900 leading-tight mb-4">
+                    Socio - Snap, Caption, Share!
+                </h3>
+                <p className="text-lg text-gray-700 mb-6">
+                    Easily capture moments, generate engaging captions with AI, and share instantly. Perfect for boosting your social media presence effortlessly.
+                </p>
+                 <p className="text-md text-blue-700 font-medium mb-8">
+                    Free for members + 1 month trial on sign up!
+                </p>
+                <Link href="/products" className="inline-block bg-purple-600 text-white px-6 py-3 rounded text-base font-medium hover:bg-purple-700 transition-colors shadow-md hover:shadow-lg">
+                    Learn More & Get Started
+                </Link>
+            </div>
           </div>
         </section>
 
