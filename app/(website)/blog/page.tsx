@@ -32,7 +32,16 @@ const postUrl = (slug: string) => `/blog/${slug}`;
 
 export default async function BlogPage() {
   // Fetch posts from Sanity only if client exists
-  const posts: Post[] = client ? await client.fetch(postsQuery) : [];
+  const allPosts: Post[] = client ? await client.fetch(postsQuery) : [];
+
+  // Filter out posts without a valid slug and log a warning for them
+  const posts = allPosts.filter(post => {
+    if (post?.slug?.current) {
+      return true;
+    }
+    console.warn(`Post skipped: Missing slug for post ID ${post._id} titled "${post.title}"`);
+    return false;
+  });
 
   return (
     <div className="bg-gray-50 min-h-screen">
