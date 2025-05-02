@@ -47,7 +47,7 @@ export default function HomePage({ posts: initialPosts }) { // Receive posts as 
           </div>
           <div className="relative w-full aspect-video md:aspect-auto md:h-[400px] rounded-lg overflow-hidden shadow-md">
             <Image
-                src="/ai.jpg" // Updated image path
+                src="/ai16.jpg" // Updated image path
                 alt="AI Hero Image" // Updated alt text
                 fill
                 className="object-cover"

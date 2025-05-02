@@ -49,6 +49,6 @@ next-env.d.ts
 /lib/sanity/data/
 
 # Login App directory
-/login 3.0/
+/login/
 
 # Editor specifics
