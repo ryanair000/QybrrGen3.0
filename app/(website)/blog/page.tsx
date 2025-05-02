@@ -31,8 +31,8 @@ const postsQuery = groq`*[_type == "post"] | order(publishedAt desc) {
 const postUrl = (slug: string) => `/blog/${slug}`;
 
 export default async function BlogPage() {
-  // Fetch posts from Sanity
-  const posts: Post[] = await client.fetch(postsQuery);
+  // Fetch posts from Sanity only if client exists
+  const posts: Post[] = client ? await client.fetch(postsQuery) : [];
 
   return (
     <div className="bg-gray-50 min-h-screen">
