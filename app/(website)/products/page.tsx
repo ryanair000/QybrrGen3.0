@@ -15,53 +15,8 @@ const sampleProducts = [
     stockStatus: null,
     href: 'https://stately-zuccutto-85f0f7.netlify.app/',
     trialInfo: '1 month trial on sign up'
-  },
-  {
-    id: '2',
-    name: 'Taiwan Coloring Page!',
-    imageUrl: 'https://via.placeholder.com/400x300.png?text=Coloring+Page', // Placeholder
-    price: 2,
-    memberPrice: 0,
-    stockStatus: null,
-    href: '#'
-  },
-  {
-    id: '3',
-    name: 'FREE Jungle Wallpaper!',
-    imageUrl: 'https://via.placeholder.com/400x300.png?text=Jungle+Wallpaper', // Placeholder
-    price: 0,
-    memberPrice: null,
-    stockStatus: null,
-    href: '#'
-  },
-  {
-    id: '4',
-    name: 'Custom Photo Illustration',
-    imageUrl: 'https://via.placeholder.com/400x300.png?text=Photo+Illustration', // Placeholder
-    price: 25,
-    memberPrice: 15,
-    stockStatus: 'Only 5 left',
-    href: '#'
-  },
-  {
-    id: '5',
-    name: 'Send a card & a sticker to a friend!',
-    imageUrl: 'https://via.placeholder.com/400x300.png?text=Card+%26+Sticker', // Placeholder
-    price: 15,
-    memberPrice: 12,
-    stockStatus: 'Only 5 left',
-    href: '#'
-  },
-  {
-    id: '6',
-    name: 'Commission a hand-drawn GIF',
-    imageUrl: 'https://via.placeholder.com/400x300.png?text=Hand+Drawn+GIF', // Placeholder
-    price: 15,
-    memberPrice: 10,
-    stockStatus: 'Only 3 left',
-    href: '#'
-  },
-  // Add more sample products if needed
+  }
+  // Removed other sample products again
 ];
 
 export default function ProductsPage() {
