@@ -1,19 +1,36 @@
 import PostPage from "./default";
-
 import { getAllPostsSlugs, getPostBySlug } from "@/lib/sanity/client";
+import { notFound } from "next/navigation";
 
 export async function generateStaticParams() {
   return await getAllPostsSlugs();
 }
 
 export async function generateMetadata({ params }) {
-  const post = await getPostBySlug(params.slug);
-  return { title: post.title };
+  try {
+    const post = await getPostBySlug(params.slug);
+    if (!post || !post.title) {
+      return { title: "Post Not Found" };
+    }
+    return { title: post.title };
+  } catch (error) {
+    console.error("Error generating metadata:", error);
+    return { title: "Error Loading Post" };
+  }
 }
 
 export default async function PostDefault({ params }) {
-  const post = await getPostBySlug(params.slug);
-  return <PostPage post={post} />;
+  try {
+    const post = await getPostBySlug(params.slug);
+    if (!post || Object.keys(post).length === 0) {
+      notFound();
+    }
+    return <PostPage post={post} />;
+  } catch (error) {
+    console.error("Error loading post:", error);
+    notFound();
+  }
 }
 
-// export const revalidate = 60;
+// Enable Incremental Static Regeneration
+export const revalidate = 60;

@@ -14,8 +14,28 @@ export default function Post(props) {
 
   const slug = post?.slug;
 
-  if (!loading && !slug) {
+  if (!loading && (!slug || !post)) {
     notFound();
+  }
+
+  // Additional safeguard against incomplete post data
+  if (!post || !post.title) {
+    return (
+      <Container>
+        <div className="mx-auto max-w-screen-md text-center py-20">
+          <h1 className="text-3xl font-bold text-gray-800 dark:text-white">
+            Post data is incomplete or unavailable
+          </h1>
+          <div className="mt-10">
+            <Link 
+              href="/"
+              className="bg-brand-secondary/20 rounded-full px-5 py-2 text-sm text-blue-600 dark:text-blue-500">
+              ← Return to homepage
+            </Link>
+          </div>
+        </div>
+      </Container>
+    );
   }
 
   const imageProps = post?.mainImage
@@ -26,12 +46,24 @@ export default function Post(props) {
     ? urlForImage(post.author.image)
     : null;
 
+  // Format date safely
+  const formatDate = (dateString) => {
+    try {
+      return format(parseISO(dateString), "MMMM dd, yyyy");
+    } catch (error) {
+      console.error("Date formatting error:", error);
+      return "Publication date unavailable";
+    }
+  };
+
   return (
     <>
       <Container className="!pt-0">
         <div className="mx-auto max-w-screen-md ">
           <div className="flex justify-center">
-            <CategoryLabel categories={post.categories} />
+            {post.categories && post.categories.length > 0 && (
+              <CategoryLabel categories={post.categories} />
+            )}
           </div>
 
           <h1 className="text-brand-primary mb-4 mt-2 text-center text-3xl font-semibold tracking-tight dark:text-white lg:text-4xl lg:leading-snug">
@@ -39,39 +71,38 @@ export default function Post(props) {
           </h1>
 
           <div className="mt-3 flex items-center justify-center space-x-3 text-gray-500 ">
-            <div className="flex items-center gap-3">
-              <div className="relative h-10 w-10 flex-shrink-0">
-                {AuthorimageProps && (
-                  <Link href={`/author/${post.author.slug.current}`}>
-                    <Image
-                      src={AuthorimageProps.src}
-                      alt={post?.author?.name}
-                      className="rounded-full object-cover"
-                      fill
-                      sizes="40px"
-                    />
-                  </Link>
-                )}
+            {post.author && (
+              <div className="flex items-center gap-3">
+                <div className="relative h-10 w-10 flex-shrink-0">
+                  {AuthorimageProps && (
+                    <Link href={`/author/${post.author.slug?.current || '#'}`}>
+                      <Image
+                        src={AuthorimageProps.src}
+                        alt={post?.author?.name || "Author"}
+                        className="rounded-full object-cover"
+                        fill
+                        sizes="40px"
+                      />
+                    </Link>
+                  )}
+                </div>
+                <div className="flex items-center text-sm">
+                  <span className="text-gray-800 dark:text-gray-400">
+                    <Link href={`/author/${post.author.slug?.current || '#'}`}>
+                      {post.author.name}
+                    </Link>
+                  </span>
+                  <span className="ml-2 flex items-center space-x-2">
+                    <time
+                      className="text-gray-500 dark:text-gray-400"
+                      dateTime={post?.publishedAt || post._createdAt}>
+                      {formatDate(post?.publishedAt || post._createdAt)}
+                    </time>
+                    <span className="text-gray-500 dark:text-gray-400">· {post.estReadingTime || "5"} min read</span>
+                  </span>
+                </div>
               </div>
-              <div className="flex items-center text-sm">
-                <span className="text-gray-800 dark:text-gray-400">
-                  <Link href={`/author/${post.author.slug.current}`}>
-                    {post.author.name}
-                  </Link>
-                </span>
-                <span className="ml-2 flex items-center space-x-2">
-                  <time
-                    className="text-gray-500 dark:text-gray-400"
-                    dateTime={post?.publishedAt || post._createdAt}>
-                    {format(
-                      parseISO(post?.publishedAt || post._createdAt),
-                      "MMMM dd, yyyy"
-                    )}
-                  </time>
-                  <span className="text-gray-500 dark:text-gray-400">· {post.estReadingTime || "5"} min read</span>
-                </span>
-              </div>
-            </div>
+            )}
           </div>
         </div>
       </Container>
