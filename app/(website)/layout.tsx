@@ -4,6 +4,7 @@ import { urlForImage } from "@/lib/sanity/image";
 // import Navbar from "@/components/navbar"; // Remove import for old Navbar
 import Header from "@/components/Header"; // Import the new Header
 import Footer from "@/components/Footer"; // Import the new Footer
+import NewsletterForm from "@/components/NewsletterForm"; // Added NewsletterForm import
 
 async function sharedMetaData(params) {
   const settings = await getSettings();
@@ -55,7 +56,12 @@ export default async function Layout({ children, params }) {
       <Header />
 
       {/* Removed the mt-2 class from here, can be added to main content area if needed */}
-      <main>{children}</main>
+      <main className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">{children}</main> {/* Added some padding to main for better spacing before newsletter/footer */}
+
+      {/* Newsletter Form added here */}
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <NewsletterForm />
+      </div>
 
       {/* Use the new Footer component */}
       {/* If your original Footer used settings, you might need to adapt the new one or keep the old one */}
