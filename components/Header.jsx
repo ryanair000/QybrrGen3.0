@@ -29,9 +29,9 @@ export default function Header() {
               HOME
             </Link>
             {/* Placeholder Dropdown Links */}
-            <a href="#" className="text-sm font-medium text-gray-700 hover:text-purple-600 flex items-center space-x-1">
+            <Link href="/#featured-solution" className="text-sm font-medium text-gray-700 hover:text-purple-600 flex items-center space-x-1">
               <span>SOLUTIONS</span><span>&#x25BC;</span>
-            </a>
+            </Link>
             <a href="#" className="text-sm font-medium text-gray-700 hover:text-purple-600">
               DOCS
             </a>
@@ -45,10 +45,10 @@ export default function Header() {
         </div>
         {/* Right side actions */}
         <div className="hidden md:flex items-center space-x-4">
-          <Link href="http://localhost:3001/login" className="text-sm font-medium text-gray-700 hover:text-purple-600">
+          <Link href="/login" className="text-sm font-medium text-gray-700 hover:text-purple-600">
             LOG IN
           </Link>
-          <Link href="http://localhost:3001/login" className="bg-purple-600 text-white px-4 py-1.5 rounded text-sm font-medium hover:bg-purple-700 transition-colors">
+          <Link href="/signup" className="bg-purple-600 text-white px-4 py-1.5 rounded text-sm font-medium hover:bg-purple-700 transition-colors">
             SIGN UP
           </Link>
         </div>

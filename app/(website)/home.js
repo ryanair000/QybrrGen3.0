@@ -57,7 +57,7 @@ export default function HomePage({ posts: initialPosts }) { // Receive posts as 
         </section>
 
         {/* Solutions Section */}
-        <section className="py-16 bg-gradient-to-br from-purple-50 to-blue-50 rounded-lg my-16">
+        <section id="featured-solution" className="py-16 bg-gradient-to-br from-purple-50 to-blue-50 rounded-lg my-16">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8 grid md:grid-cols-2 gap-12 items-center">
             {/* Image on the left */}
             <div className="relative w-full aspect-square md:h-[350px] rounded-lg overflow-hidden shadow-lg mx-auto md:mx-0 max-w-md">

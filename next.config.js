@@ -7,7 +7,8 @@ const nextConfig = {
     dangerouslyAllowSVG: true,
     remotePatterns: [
       { hostname: "cdn.sanity.io" },
-      { hostname: "via.placeholder.com" }
+      { hostname: "via.placeholder.com" },
+      { hostname: "images.unsplash.com" }
     ]
   },
   typescript: {
