@@ -5,6 +5,7 @@ import { urlForImage } from "@/lib/sanity/image";
 import Header from "@/components/Header"; // Import the new Header
 import NewsletterForm from "@/components/NewsletterForm"; // Added NewsletterForm import
 import { Github, Instagram, Linkedin, Youtube, /* Check Lucide for TikTok icon name, using a placeholder for now */ Users } from 'lucide-react'; // Users as placeholder for TikTok
+import Image from "next/image"; // Import Next.js Image component
 
 // Helper for social media icons (Heroicons - outline style)
 const GitHubIcon = () => (
@@ -55,7 +56,7 @@ const NewFooter = () => {
           <div className="mb-4 md:mb-0">
             <a href="/" className="flex items-center">
               {/* Using Next.js Image component for optimized image loading */}
-              <img src="/logo.png" alt="QybrrLabs Logo" className="h-12 w-auto" /> {/* Increased logo size to h-12 */}
+              <Image src="/logo.png" alt="QybrrLabs Logo" height={48} width={200} /> {/* Increased logo size to h-12 and added width/height for Next.js Image */}
               {/* <span className="ml-3 text-xl font-semibold text-gray-800 dark:text-white">QybrrLabs</span> */}
             </a>
           </div>
