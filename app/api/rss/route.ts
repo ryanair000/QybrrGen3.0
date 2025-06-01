@@ -62,7 +62,7 @@ export async function GET() {
           },
         ],
         date: new Date(post.publishedAt || post._createdAt),
-        image: post.mainImage ? urlForImage(post.mainImage).url() : undefined,
+        image: post.mainImage ? urlForImage(post.mainImage)?.src : undefined,
         // You can also add categories if available and desired
         // category: post.categories?.map((cat: any) => ({ name: cat.title })) || [],
       });
