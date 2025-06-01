@@ -36,7 +36,7 @@ const BlogCard = ({ post }: { post: Post }) => {
   return (
     <article className="flex flex-col overflow-hidden rounded-lg shadow-lg bg-white dark:bg-gray-800 hover:shadow-xl transition-shadow duration-300">
       {postImageSrc && (
-        <Link href={`/post/${post.slug.current}`} className="block">
+        <Link href={`/post/${post.slug?.current}`} className="block">
           <div className="aspect-w-16 aspect-h-9">
              <Image
                 src={postImageSrc}
@@ -53,7 +53,7 @@ const BlogCard = ({ post }: { post: Post }) => {
           <p className="text-sm text-gray-500 dark:text-gray-400">
             <time dateTime={post.publishedAt}>{format(new Date(post.publishedAt), 'MMMM d, yyyy')}</time>
           </p>
-          <Link href={`/post/${post.slug.current}`} className="mt-2 block">
+          <Link href={`/post/${post.slug?.current}`} className="mt-2 block">
             <h3 className="text-xl font-semibold text-gray-900 dark:text-white hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
               {post.title}
             </h3>
@@ -89,7 +89,7 @@ const BlogCard = ({ post }: { post: Post }) => {
         {post.categories && post.categories.length > 0 && (
           <div className="mt-4 flex flex-wrap gap-2">
             {post.categories.map((category) => (
-              <Link key={category.slug.current} href={`/blog/category/${category.slug.current}`}>
+              <Link key={category.slug?.current} href={`/blog/category/${category.slug?.current}`}>
                 <span className="inline-flex items-center rounded-full bg-indigo-100 dark:bg-indigo-800 px-3 py-0.5 text-xs font-medium text-indigo-800 dark:text-indigo-200 hover:bg-indigo-200 dark:hover:bg-indigo-700 transition-colors">
                   {category.title}
                 </span>
@@ -110,7 +110,7 @@ const CategoryFilters = ({ categories }: { categories: Category[] }) => {
     <div className="mb-8">
       <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-3">
         {allCategories.map((category, index) => (
-          <Link key={category.slug.current || index} href={category.slug.current ? `/blog/category/${category.slug.current}` : "/blog"}>
+          <Link key={category.slug?.current || index} href={category.slug?.current ? `/blog/category/${category.slug?.current}` : "/blog"}>
             <span className="cursor-pointer whitespace-nowrap rounded-full bg-gray-100 dark:bg-gray-700 px-3 py-1.5 text-sm font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors">
               {category.title}
               {/* Add a small 'x' if you want to make them look like dismissible tags later */}
