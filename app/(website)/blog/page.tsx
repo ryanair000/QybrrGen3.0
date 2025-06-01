@@ -124,13 +124,33 @@ const CategoryFilters = ({ categories }: { categories: Category[] }) => {
 
 
 export default async function BlogPage() {
+  // Ensure client is not null before fetching
+  if (!client) {
+    console.error("Sanity client is not initialized. Cannot fetch blog posts or categories.");
+    return (
+      <div className="bg-gray-50 dark:bg-gray-900 py-12 sm:py-16">
+        <div className="mx-auto max-w-7xl px-6 lg:px-8">
+          <div className="mx-auto max-w-2xl text-center mb-12 sm:mb-16">
+            <h2 className="text-3xl font-bold tracking-tight text-gray-900 dark:text-white sm:text-4xl">
+              From the Blog
+            </h2>
+            <p className="mt-2 text-lg leading-8 text-gray-600 dark:text-gray-300">
+              Insights, ideas, and updates from our team.
+            </p>
+          </div>
+          <p className="text-center text-red-500 dark:text-red-400">Error: Blog content is currently unavailable. Please check back later.</p>
+        </div>
+      </div>
+    );
+  }
+
   // Fetch all posts
-  const posts: Post[] = await client.fetch(postquery);
+  const posts: Post[] = await client!.fetch(postquery);
   
   // Fetch all unique categories for filtering
   // Note: This query might need to be adjusted based on your exact category schema and how they are referenced in posts.
   const categoryQuery = `*[_type == "category"]{title, slug}`;
-  const categories: Category[] = await client.fetch(categoryQuery);
+  const categories: Category[] = await client!.fetch(categoryQuery);
 
   // A simple function to generate an excerpt if not provided by GROQ or if it's too short
   const generateExcerpt = (body: any, length: number = 30): string => {

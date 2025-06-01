@@ -10,8 +10,8 @@ export const useCdn = false; // Force false for debugging
 // NEXT_PUBLIC_ for 3000
 // SANITY_STUDIO_ for 3333 & *.sanity.studio
 export const projectId =
-  process.env.NEXT_PUBLIC_SANITY_PROJECT_ID ||
-  (process.env.SANITY_STUDIO_PROJECT_ID as string);
+  (process.env.NEXT_PUBLIC_SANITY_PROJECT_ID ||
+  process.env.SANITY_STUDIO_PROJECT_ID) as string;
 
 export const dataset =
   process.env.NEXT_PUBLIC_SANITY_DATASET || ("production" as string);
