@@ -15,6 +15,16 @@ const sampleProducts = [
     stockStatus: null,
     href: 'https://stately-zuccutto-85f0f7.netlify.app/',
     trialInfo: '1 month trial on sign up'
+  },
+  {
+    id: '2',
+    name: 'The Bio Chef',
+    imageUrl: '/placeholder-biochef.png', // Placeholder image, replace with your Bio Chef image
+    price: 15,
+    memberPrice: 10,
+    stockStatus: null,
+    href: '/biochef', // Link to the Bio Chef app page
+    trialInfo: '7-day free trial'
   }
   // Removed other sample products again
 ];
