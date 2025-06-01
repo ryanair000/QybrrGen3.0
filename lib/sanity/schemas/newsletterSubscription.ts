@@ -19,7 +19,6 @@ export default defineType({
       options: {
         dateFormat: 'YYYY-MM-DD',
         timeFormat: 'HH:mm',
-        calendarTodayLabel: 'Today',
       },
       readOnly: true,
     }),
