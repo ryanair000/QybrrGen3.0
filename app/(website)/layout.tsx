@@ -3,7 +3,7 @@ import { getSettings } from "@/lib/sanity/client";
 import { urlForImage } from "@/lib/sanity/image";
 // import Navbar from "@/components/navbar"; // Remove import for old Navbar
 import Header from "@/components/Header"; // Import the new Header
-import NewsletterForm from "@/components/NewsletterForm"; // Added NewsletterForm import
+// import NewsletterForm from "@/components/NewsletterForm"; // Added NewsletterForm import
 import { Github, Instagram, Linkedin, Youtube, /* Check Lucide for TikTok icon name, using a placeholder for now */ Users } from 'lucide-react'; // Users as placeholder for TikTok
 import Image from "next/image"; // Import Next.js Image component
 
@@ -132,9 +132,9 @@ export default async function Layout({ children, params }) {
       <main className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">{children}</main> {/* Added some padding to main for better spacing before newsletter/footer */}
 
       {/* Newsletter Form added here */}
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      {/* <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <NewsletterForm />
-      </div>
+      </div> */}
 
       {/* Use the new Footer component */}
       {/* If your original Footer used settings, you might need to adapt the new one or keep the old one */}
