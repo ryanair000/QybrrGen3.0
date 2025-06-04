@@ -19,7 +19,7 @@ const sampleProducts = [
   {
     id: '2',
     name: 'The Bio Chef',
-    imageUrl: '/placeholder-biochef.png', // Placeholder image, replace with your Bio Chef image
+    imageUrl: '/img/thebiochef.png', // Placeholder image, replace with your Bio Chef image
     price: 15,
     memberPrice: 10,
     stockStatus: null,
