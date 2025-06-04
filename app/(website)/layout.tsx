@@ -1,3 +1,4 @@
+import React from 'react';
 import { getSettings } from "@/lib/sanity/client";
 // import Footer from "@/components/footer"; // Keep your existing Footer for now or decide which one to use
 import { urlForImage } from "@/lib/sanity/image";
@@ -86,12 +87,12 @@ async function sharedMetaData(params) {
     // enable this for resolving opengraph image
     // metadataBase: new URL(settings.url),
     title: {
-      default: settings?.title || "QybrrLabs - Blog",
+      default: settings?.title || "QybrrLabs Home",
       template: "%s | QybrrLabs"
     },
     description:
       settings?.description ||
-      "QybrrLabs - Blog powered by Next.js and Sanity",
+      "QybrrLabs Home powered by Next.js and Sanity",
     keywords: ["Next.js", "Sanity", "Tailwind CSS", "QybrrLabs"],
     authors: [{ name: "Surjith" }],
     canonical: settings?.url,

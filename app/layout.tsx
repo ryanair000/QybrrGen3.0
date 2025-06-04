@@ -23,6 +23,9 @@ export default function RootLayout({
       lang="en"
       suppressHydrationWarning
       className={cx(inter.variable, lora.variable)}>
+      <head>
+        <link rel="icon" href="/img/logotop.png" />
+      </head>
       <body className="text-gray-800 antialiased dark:bg-black dark:text-gray-400">
         <Providers>{children}</Providers>
       </body>
