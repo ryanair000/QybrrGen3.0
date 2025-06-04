@@ -87,6 +87,37 @@ export default function HomePage({ posts: initialPosts }) { // Receive posts as 
           </div>
         </section>
 
+        {/* Second Solutions Section (The Bio Chef) - Alternating layout */}
+        <section id="featured-solution-biochef" className="py-16 bg-gradient-to-br from-blue-50 to-purple-50 rounded-lg my-16">
+          <div className="container mx-auto px-4 sm:px-6 lg:px-8 grid md:grid-cols-2 gap-12 items-center">
+            {/* Text content on the left */}
+            <div className="text-center md:text-left md:order-2">
+                <h2 className="text-sm font-semibold text-blue-600 uppercase tracking-wide mb-2">Featured Solution</h2>
+                <h3 className="text-3xl sm:text-4xl font-bold text-gray-900 leading-tight mb-4">
+                    The Bio Chef - Your Personal Meal Planner!
+                </h3>
+                <p className="text-lg text-gray-700 mb-6">
+                    Generate custom meal plans, track nutrition, and discover new recipes with AI. Achieve your health goals with ease.
+                </p>
+                 <p className="text-md text-purple-700 font-medium mb-8">
+                    Free for members + 7-day free trial on sign up!
+                </p>
+                <Link href="/biochef" className="inline-block bg-blue-600 text-white px-6 py-3 rounded text-base font-medium hover:bg-blue-700 transition-colors shadow-md hover:shadow-lg">
+                    Learn More & Get Started
+                </Link>
+            </div>
+            {/* Image on the right */}
+            <div className="relative w-full aspect-square md:h-[350px] rounded-lg overflow-hidden shadow-lg mx-auto md:mx-0 max-w-md md:order-1">
+                <Image
+                    src="/img/thebiochef.png" // Using the Bio Chef image
+                    alt="The Bio Chef App Screenshot"
+                    fill
+                    className="object-cover"
+                />
+            </div>
+          </div>
+        </section>
+
         {/* Filter/Tab Section - Uses the updated filters array */}
         <section className="mb-12 border-b border-gray-200">
           <div className="flex space-x-1 sm:space-x-2 overflow-x-auto pb-3">
