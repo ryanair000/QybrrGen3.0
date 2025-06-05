@@ -20,11 +20,11 @@ const sampleProducts = [
     id: '2',
     name: 'The Bio Chef',
     imageUrl: '/img/thebiochef.png', // Placeholder image, replace with your Bio Chef image
-    price: 15,
-    memberPrice: 10,
+    price: 5,
+    memberPrice: 0,
     stockStatus: null,
     href: 'https://biochef.netlify.app/', // Link to the Bio Chef app page
-    trialInfo: '7-day free trial'
+    trialInfo: '1 month trial on sign up'
   }
   // Removed other sample products again
 ];
