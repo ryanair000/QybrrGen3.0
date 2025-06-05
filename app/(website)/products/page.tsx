@@ -23,7 +23,7 @@ const sampleProducts = [
     price: 15,
     memberPrice: 10,
     stockStatus: null,
-    href: '/biochef', // Link to the Bio Chef app page
+    href: 'https://biochef.netlify.app/', // Link to the Bio Chef app page
     trialInfo: '7-day free trial'
   }
   // Removed other sample products again
