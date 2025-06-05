@@ -98,10 +98,10 @@ export default function HomePage({ posts: initialPosts }) { // Receive posts as 
               <div className="text-center md:text-left md:order-2">
                   <h2 className="text-sm font-semibold text-blue-600 uppercase tracking-wide mb-2">Featured Solution</h2>
                   <h3 className="text-3xl sm:text-4xl font-bold text-gray-900 leading-tight mb-4">
-                      The Bio Chef - Your Personal Meal Planner!
+                      AI Social Media Bio Generator
                   </h3>
                   <p className="text-lg text-gray-700 mb-6">
-                      Generate custom meal plans, track nutrition, and discover new recipes with AI. Achieve your health goals with ease.
+                      Craft captivating bios for any platform instantly. Our AI helps you stand out and make a memorable first impression.
                   </p>
                    <p className="text-md text-purple-700 font-medium mb-8">
                       Free for members + 7-day free trial on sign up!
