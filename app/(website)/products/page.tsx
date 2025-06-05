@@ -25,6 +25,16 @@ const sampleProducts = [
     stockStatus: null,
     href: 'https://biochef.netlify.app/', // Link to the Bio Chef app page
     trialInfo: '1 month trial on sign up'
+  },
+  {
+    id: '3',
+    name: 'ClutchScore - AI Powered Insights for the Ultimate Gamer',
+    imageUrl: '/ai1.png',
+    price: 0,
+    memberPrice: 0,
+    stockStatus: null,
+    href: 'https://clutchscore.netlify.app/',
+    trialInfo: 'Free trial during sign up'
   }
   // Removed other sample products again
 ];
