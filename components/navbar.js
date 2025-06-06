@@ -40,6 +40,11 @@ export default function Navbar(props) {
       label: "Login",
       href: "/login",
       isButton: true
+    },
+    {
+      label: "Profile",
+      href: "/profile",
+      isButton: true
     }
   ];
 
