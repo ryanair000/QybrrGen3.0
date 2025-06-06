@@ -1,8 +1,10 @@
 'use client'; // Keep client directive for potential future interactivity
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link'; // Optional: if cards link somewhere
+import AOS from 'aos';
+import 'aos/dist/aos.css'; // Import AOS CSS
 
 // Sample Product Data - Replace with your actual data source later
 const sampleProducts = [
@@ -40,6 +42,13 @@ const sampleProducts = [
 ];
 
 export default function ProductsPage() {
+  useEffect(() => {
+    AOS.init({
+      duration: 1000, // duration of the animation
+      once: true, // whether animation should happen only once - while scrolling down
+    });
+  }, []);
+
   return (
     <div className="bg-white">
       <div className="container mx-auto px-4 py-12 sm:px-6 lg:px-8">
@@ -47,7 +56,15 @@ export default function ProductsPage() {
 
         <div className="grid grid-cols-1 gap-y-10 gap-x-6 sm:grid-cols-2 lg:grid-cols-3 xl:gap-x-8">
           {sampleProducts.map((product) => (
-            <Link key={product.id} href={product.href} className="group block bg-gray-50 p-4 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200 relative">
+            <Link
+              key={product.id}
+              href={product.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group block bg-gray-50 p-4 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200 relative"
+              data-aos="fade-up"
+              data-aos-delay={product.id * 100}
+            >
               {/* Stock Status Badge */}
               {product.stockStatus && (
                 <span className="absolute top-2 right-2 inline-flex items-center rounded-md bg-red-50 px-2 py-1 text-xs font-medium text-red-700 ring-1 ring-inset ring-red-600/10 z-10">
