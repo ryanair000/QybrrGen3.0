@@ -86,12 +86,12 @@ export default function AccountPage() {
             <div className="space-y-1">
                 <div className="px-3 py-2 flex items-center space-x-3">
                     <Image 
-                        src={user.user_metadata.avatar_url || '/default-avatar.png'} 
+                        src={user.user_metadata.avatar_url || '/img/3d-rendering-cute-robot.jpg'} 
                         alt="Profile" 
                         width={48} 
                         height={48} 
                         className="rounded-full object-cover"
-                        onError={(e) => e.currentTarget.src = '/default-avatar.png'}
+                        onError={(e) => e.currentTarget.src = '/img/3d-rendering-cute-robot.jpg'}
                     />
                     <div>
                         <p className="font-bold text-gray-800">{user.user_metadata.username || user.email}</p>
@@ -184,12 +184,12 @@ const ProfileContent = ({ user }) => {
                     <label className="block text-sm font-medium text-gray-700">Photo</label>
                     <div className="mt-2 flex items-center space-x-4">
                         <Image 
-                            src={avatarPreview || '/default-avatar.png'} 
+                            src={avatarPreview || '/img/3d-rendering-cute-robot.jpg'} 
                             alt="Profile Preview" 
                             width={64} 
                             height={64} 
                             className="rounded-full object-cover h-16 w-16"
-                            onError={(e) => e.currentTarget.src = '/default-avatar.png'}
+                            onError={(e) => e.currentTarget.src = '/img/3d-rendering-cute-robot.jpg'}
                         />
                         <input type="file" accept="image/*" onChange={handleAvatarChange} ref={avatarInputRef} className="hidden" />
                         <button type="button" onClick={() => avatarInputRef.current.click()} className="bg-white py-2 px-3 border border-gray-300 rounded-md shadow-sm text-sm leading-4 font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500">
