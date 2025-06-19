@@ -38,7 +38,7 @@ export default function AccountPage() {
     fetchUser();
 
     const { data: authListener } = supabase.auth.onAuthStateChange((_event, session) => {
-        if (_event === 'USER_UPDATED') {
+        if (_event === 'USER_UPDATED' && session) {
             setUser(session.user);
             router.refresh();
         }
