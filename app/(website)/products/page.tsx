@@ -93,6 +93,35 @@ export default function ProductsPage() {
     return subscriptions.some(sub => sub.productId === productId);
   };
 
+  const ProductCardContent = ({ product }) => (
+    <>
+      {product.stockStatus && (
+        <span className="absolute top-2 right-2 inline-flex items-center rounded-md bg-red-50 px-2 py-1 text-xs font-medium text-red-700 ring-1 ring-inset ring-red-600/10 z-10">
+          {product.stockStatus}
+        </span>
+      )}
+      <div className="aspect-w-1 aspect-h-1 w-full overflow-hidden rounded-md bg-gray-200 group-hover:opacity-90 lg:aspect-none lg:h-60">
+        <Image
+          src={product.imageUrl}
+          alt={product.name}
+          width={400}
+          height={300}
+          className="h-full w-full object-cover object-center lg:h-full lg:w-full"
+        />
+      </div>
+      <div className="mt-4">
+        <h3 className="text-base font-medium text-gray-800 group-hover:text-purple-600">
+          {product.name}
+        </h3>
+        {product.trialInfo && (
+          <p className="mt-1 text-sm text-blue-600 font-medium">
+            {product.trialInfo}
+          </p>
+        )}
+      </div>
+    </>
+  );
+
   return (
     <>
       <div className="bg-white">
@@ -100,88 +129,86 @@ export default function ProductsPage() {
           <h1 className="text-3xl font-bold tracking-tight text-gray-900 mb-10 text-center">Our Products</h1>
 
           <div className="grid grid-cols-1 gap-y-10 gap-x-6 sm:grid-cols-2 lg:grid-cols-3 xl:gap-x-8">
-            {sampleProducts.map((product) => (
-              <div
-                key={product.id}
-                className="group bg-gray-50 p-4 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200 flex flex-col"
-                data-aos="fade-up"
-                data-aos-delay={Number(product.id) * 100}
-              >
-                <Link
-                  href={product.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="block"
+            {sampleProducts.map((product) => {
+              const isSocioProduct = product.name === 'Socio - Snap, Caption, Share!';
+              return (
+                <div
+                  key={product.id}
+                  className="group bg-gray-50 p-4 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200 flex flex-col"
+                  data-aos="fade-up"
+                  data-aos-delay={Number(product.id) * 100}
                 >
-                  {product.stockStatus && (
-                    <span className="absolute top-2 right-2 inline-flex items-center rounded-md bg-red-50 px-2 py-1 text-xs font-medium text-red-700 ring-1 ring-inset ring-red-600/10 z-10">
-                      {product.stockStatus}
-                    </span>
+                  {isSocioProduct ? (
+                    <div className="block cursor-default">
+                      <ProductCardContent product={product} />
+                    </div>
+                  ) : (
+                    <Link
+                      href={product.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="block"
+                    >
+                      <ProductCardContent product={product} />
+                    </Link>
                   )}
-                  <div className="aspect-w-1 aspect-h-1 w-full overflow-hidden rounded-md bg-gray-200 group-hover:opacity-90 lg:aspect-none lg:h-60">
-                    <Image
-                      src={product.imageUrl}
-                      alt={product.name}
-                      width={400}
-                      height={300}
-                      className="h-full w-full object-cover object-center lg:h-full lg:w-full"
-                    />
-                  </div>
-                  <div className="mt-4">
-                    <h3 className="text-base font-medium text-gray-800 group-hover:text-purple-600">
-                      {product.name}
-                    </h3>
-                    {product.trialInfo && (
-                      <p className="mt-1 text-sm text-blue-600 font-medium">
-                        {product.trialInfo}
-                      </p>
+
+                  <div className="mt-auto pt-4">
+                    <div className="mb-2">
+                        {product.price > 0 ? (
+                         <p className="text-lg font-semibold text-gray-900">
+                            {product.memberPrice !== null && product.memberPrice < product.price ? (
+                                <>
+                                    <span className="text-gray-500 line-through mr-2">${product.price.toFixed(2)}</span>
+                                    <span className="text-purple-700">${product.memberPrice.toFixed(2)} for members</span>
+                                </> 
+                            ) : (
+                               `$${product.price.toFixed(2)}`
+                            )}
+                         </p>
+                       ) : (
+                         <p className="text-lg font-semibold text-green-600">Free</p>
+                       )}
+                       {product.price === 0 && product.memberPrice !== null && product.memberPrice > 0 && (
+                           <p className="text-sm text-purple-700">${product.memberPrice.toFixed(2)} for members</p>
+                       )}
+                    </div>
+
+                    {!loading && (
+                      <div className="mt-2">
+                          {isTrialActive(product.id) ? (
+                            <div className="space-y-2">
+                              <button
+                                disabled
+                                className="w-full bg-green-100 text-green-800 py-2 px-4 rounded-md text-sm font-medium"
+                              >
+                                Trial Active
+                              </button>
+                              {isSocioProduct && (
+                                <a
+                                  href="https://socioaiapp.netlify.app/"
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="block w-full text-center bg-blue-500 text-white py-2 px-4 rounded-md text-sm font-medium hover:bg-blue-600 transition-colors"
+                                >
+                                  Visit Socio Now!
+                                </a>
+                              )}
+                            </div>
+                          ) : (
+                            <button
+                              onClick={() => handleClaimTrial(product)}
+                              className="w-full bg-purple-600 text-white py-2 px-4 rounded-md text-sm font-medium hover:bg-purple-700 transition-colors"
+                            >
+                              Claim Trial
+                            </button>
+                          )}
+                      </div>
                     )}
                   </div>
-                </Link>
-
-                <div className="mt-auto pt-4">
-                  <div className="mb-2">
-                      {product.price > 0 ? (
-                       <p className="text-lg font-semibold text-gray-900">
-                          {product.memberPrice !== null && product.memberPrice < product.price ? (
-                              <>
-                                  <span className="text-gray-500 line-through mr-2">${product.price.toFixed(2)}</span>
-                                  <span className="text-purple-700">${product.memberPrice.toFixed(2)} for members</span>
-                              </>
-                          ) : (
-                             `$${product.price.toFixed(2)}`
-                          )}
-                       </p>
-                     ) : (
-                       <p className="text-lg font-semibold text-green-600">Free</p>
-                     )}
-                     {product.price === 0 && product.memberPrice !== null && product.memberPrice > 0 && (
-                         <p className="text-sm text-purple-700">${product.memberPrice.toFixed(2)} for members</p>
-                     )}
-                  </div>
-
-                  {!loading && (
-                    <div className="mt-2">
-                        {isTrialActive(product.id) ? (
-                          <button
-                            disabled
-                            className="w-full bg-green-100 text-green-800 py-2 px-4 rounded-md text-sm font-medium cursor-not-allowed"
-                          >
-                            Trial Active
-                          </button>
-                        ) : (
-                          <button
-                            onClick={() => handleClaimTrial(product)}
-                            className="w-full bg-purple-600 text-white py-2 px-4 rounded-md text-sm font-medium hover:bg-purple-700 transition-colors"
-                          >
-                            Claim Trial
-                          </button>
-                        )}
-                    </div>
-                  )}
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       </div>
