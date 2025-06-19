@@ -13,10 +13,10 @@ export default function ConfirmEmailPage() {
             Confirm Your Email
           </h2>
           <p className="mt-2 text-md text-gray-600">
-            We've sent a confirmation link to your email address. Please click the link to complete your registration.
+            We&apos;ve sent a confirmation link to your email address. Please click the link to complete your registration.
           </p>
            <p className="mt-2 text-sm text-gray-500">
-            (Don't forget to check your spam folder!)
+            (Don&apos;t forget to check your spam folder!)
           </p>
         </div>
         <div className="flex flex-col space-y-4 sm:flex-row sm:space-y-0 sm:space-x-4 justify-center">
