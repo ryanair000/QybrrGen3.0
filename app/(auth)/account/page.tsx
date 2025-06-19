@@ -16,6 +16,10 @@ const LockIcon = ({ className = 'w-5 h-5' }) => (
 const BellIcon = ({ className = 'w-5 h-5' }) => (
     <svg xmlns="http://www.w3.org/2000/svg" className={className} viewBox="0 0 20 20" fill="currentColor"><path d="M10 2a6 6 0 00-6 6v3.586l-.707.707A1 1 0 004 14h12a1 1 0 00.707-1.707L16 11.586V8a6 6 0 00-6-6zM10 18a3 3 0 01-3-3h6a3 3 0 01-3 3z" /></svg>
 );
+const BackArrowIcon = ({ className = 'w-5 h-5' }) => (
+    <svg xmlns="http://www.w3.org/2000/svg" className={className} fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" /></svg>
+);
+
 const SubscriptionIcon = ({ className = 'w-5 h-5' }) => (
     <svg xmlns="http://www.w3.org/2000/svg" className={className} fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M16.5 6v.75m0 3v.75m0 3v.75m0 3V18m-9-1.5h5.25m-5.25 0h5.25m-5.25 0h5.25m-5.25 0h5.25M3 4.5h18a1.5 1.5 0 011.5 1.5v12A1.5 1.5 0 0121 19.5H3a1.5 1.5 0 01-1.5-1.5v-12A1.5 1.5 0 013 4.5z" /></svg>
 );
@@ -81,6 +85,12 @@ export default function AccountPage() {
   return (
     <div className="bg-gray-50 min-h-screen">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div className="mb-8">
+          <Link href="/" className="inline-flex items-center text-sm font-medium text-gray-600 hover:text-purple-700 transition-colors">
+            <BackArrowIcon className="mr-2" />
+            Back to Home
+          </Link>
+        </div>
         <div className="lg:grid lg:grid-cols-12 lg:gap-x-5">
           <aside className="py-6 px-2 sm:px-6 lg:py-0 lg:px-0 lg:col-span-3">
             <div className="space-y-1">
