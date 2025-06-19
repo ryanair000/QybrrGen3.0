@@ -5,7 +5,6 @@ import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabaseClient";
-import { sampleProducts } from '@/lib/products';
 
 interface AuthFormProps {
   formType: "login" | "signup";
@@ -42,34 +41,12 @@ export default function AuthForm({ formType }: AuthFormProps) {
         router.refresh();
       }
     } else {
-      const trialEndDate = new Date();
-      trialEndDate.setDate(trialEndDate.getDate() + 30);
-
-      const subscriptions = sampleProducts.map(product => ({
-        productId: product.id,
-        name: product.name,
-        status: 'trialing',
-        trialEndsAt: trialEndDate.toISOString(),
-      }));
-
-      const notifications = [
-        {
-          id: `trial-${Date.now()}`,
-          type: 'info',
-          message: `Welcome! Your 30-day free trial for all products has started.`,
-          read: false,
-          createdAt: new Date().toISOString(),
-        }
-      ];
-
       const { error: signUpError } = await supabase.auth.signUp({
         email,
         password,
         options: {
           data: {
             username: username,
-            subscriptions: subscriptions,
-            notifications: notifications,
           },
         },
       });
