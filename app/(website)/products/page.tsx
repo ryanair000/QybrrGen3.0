@@ -63,7 +63,7 @@ export default function ProductsPage() {
               rel="noopener noreferrer"
               className="group block bg-gray-50 p-4 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200 relative"
               data-aos="fade-up"
-              data-aos-delay={product.id * 100}
+              data-aos-delay={Number(product.id) * 100}
             >
               {/* Stock Status Badge */}
               {product.stockStatus && (
