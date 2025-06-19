@@ -2,44 +2,10 @@
 
 import React, { useEffect } from 'react';
 import Image from 'next/image';
-import Link from 'next/link'; // Optional: if cards link somewhere
+import Link from 'next/link';
 import AOS from 'aos';
-import 'aos/dist/aos.css'; // Import AOS CSS
-
-// Sample Product Data - Replace with your actual data source later
-const sampleProducts = [
-  {
-    id: '1',
-    name: 'Socio - Snap, Caption, Share!',
-    imageUrl: '/socio.jpeg',
-    price: 5,
-    memberPrice: 0,
-    stockStatus: null,
-    href: 'https://stately-zuccutto-85f0f7.netlify.app/',
-    trialInfo: '1 month trial on sign up'
-  },
-  {
-    id: '2',
-    name: 'The Bio Chef',
-    imageUrl: '/img/thebiochef.png', // Placeholder image, replace with your Bio Chef image
-    price: 5,
-    memberPrice: 0,
-    stockStatus: null,
-    href: 'https://biochef.netlify.app/', // Link to the Bio Chef app page
-    trialInfo: '1 month trial on sign up'
-  },
-  {
-    id: '3',
-    name: 'ClutchScore - AI Powered Insights for the Ultimate Gamer',
-    imageUrl: '/ai1.png',
-    price: 0,
-    memberPrice: 0,
-    stockStatus: null,
-    href: 'https://clutchscore.netlify.app/',
-    trialInfo: 'Free trial during sign up'
-  }
-  // Removed other sample products again
-];
+import 'aos/dist/aos.css';
+import { sampleProducts } from '@/lib/products';
 
 export default function ProductsPage() {
   useEffect(() => {

@@ -23,6 +23,12 @@ const BellIcon = ({ className = 'w-5 h-5' }) => (
   </svg>
 );
 
+const SubscriptionIcon = ({ className = 'w-5 h-5' }) => (
+  <svg xmlns="http://www.w3.org/2000/svg" className={className} fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+    <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 6v.75m0 3v.75m0 3v.75m0 3V18m-9-1.5h5.25m-5.25 0h5.25m-5.25 0h5.25m-5.25 0h5.25M3 4.5h18a1.5 1.5 0 011.5 1.5v12A1.5 1.5 0 0121 19.5H3a1.5 1.5 0 01-1.5-1.5v-12A1.5 1.5 0 013 4.5z" />
+  </svg>
+);
+
 export default function AccountPage() {
   const router = useRouter();
   const [user, setUser] = useState(null);
@@ -73,8 +79,10 @@ export default function AccountPage() {
         return <ProfileContent user={user} />;
       case 'password':
         return <PasswordContent />;
+      case 'subscriptions':
+        return <SubscriptionsContent subscriptions={user.user_metadata.subscriptions} />;
       case 'notifications':
-        return <NotificationsContent />;
+        return <NotificationsContent notifications={user.user_metadata.notifications} />;
       default:
         return null;
     }
@@ -114,6 +122,12 @@ export default function AccountPage() {
                   label="Notifications"
                   isActive={activeTab === 'notifications'}
                   onClick={() => setActiveTab('notifications')}
+                />
+                <SidebarButton
+                  icon={<SubscriptionIcon />}
+                  label="Subscriptions"
+                  isActive={activeTab === 'subscriptions'}
+                  onClick={() => setActiveTab('subscriptions')}
                 />
               </nav>
             </div>
@@ -203,34 +217,67 @@ const PasswordContent = () => (
     </div>
 );
 
-const NotificationsContent = () => (
+const SubscriptionsContent = ({ subscriptions }) => {
+  if (!subscriptions || subscriptions.length === 0) {
+    return (
+      <div>
+        <h2 className="text-2xl font-bold text-gray-800 mb-1">Subscriptions</h2>
+        <p className="text-sm text-gray-500">You have no active subscriptions.</p>
+      </div>
+    );
+  }
+
+  return (
     <div>
-        <h2 className="text-2xl font-bold text-gray-800 mb-1">Notifications</h2>
-        <p className="text-sm text-gray-500 mb-6">Manage how you receive notifications.</p>
-        <div className="space-y-5">
-            <div className="flex items-start">
-                <div className="flex items-center h-5">
-                    <input id="comments" name="comments" type="checkbox" className="focus:ring-purple-500 h-4 w-4 text-purple-600 border-gray-300 rounded" />
-                </div>
-                <div className="ml-3 text-sm">
-                    <label htmlFor="comments" className="font-medium text-gray-700">Comments</label>
-                    <p className="text-gray-500">Get notified when someones posts a comment on a posting.</p>
-                </div>
+      <h2 className="text-2xl font-bold text-gray-800 mb-1">My Subscriptions</h2>
+      <p className="text-sm text-gray-500 mb-6">Manage your product subscriptions and trials.</p>
+      <div className="space-y-4">
+        {subscriptions.map(sub => (
+          <div key={sub.productId} className="p-4 border border-gray-200 rounded-lg flex justify-between items-center">
+            <div>
+              <h3 className="font-semibold text-gray-800">{sub.name}</h3>
+              <p className={`text-sm ${sub.status === 'trialing' ? 'text-blue-600' : 'text-green-600'}`}>
+                Status: <span className="font-medium">{sub.status}</span>
+              </p>
+              {sub.status === 'trialing' && (
+                <p className="text-xs text-gray-500">
+                  Trial ends on: {new Date(sub.trialEndsAt).toLocaleDateString()}
+                </p>
+              )}
             </div>
-            <div className="flex items-start">
-                <div className="flex items-center h-5">
-                    <input id="candidates" name="candidates" type="checkbox" className="focus:ring-purple-500 h-4 w-4 text-purple-600 border-gray-300 rounded" />
-                </div>
-                <div className="ml-3 text-sm">
-                    <label htmlFor="candidates" className="font-medium text-gray-700">Candidates</label>
-                    <p className="text-gray-500">Get notified when a candidate applies for a job.</p>
-                </div>
-            </div>
-        </div>
-        <div className="pt-6 mt-6 border-t border-gray-200 flex justify-end">
-            <button type="submit" className="bg-purple-600 text-white px-5 py-2.5 rounded-md text-sm font-medium hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500">
-                Save
+            <button className="bg-gray-200 text-gray-700 px-4 py-1.5 rounded-md text-sm font-medium hover:bg-gray-300">
+                Manage
             </button>
-        </div>
+          </div>
+        ))}
+      </div>
     </div>
+  );
+};
+
+const NotificationsContent = ({ notifications }) => (
+  <div>
+    <h2 className="text-2xl font-bold text-gray-800 mb-1">Notifications</h2>
+    <p className="text-sm text-gray-500 mb-6">Manage how you receive notifications.</p>
+    <div className="space-y-4">
+      {notifications && notifications.length > 0 ? (
+        notifications.map(notif => (
+          <div key={notif.id} className={`p-4 rounded-lg flex items-start space-x-3 ${notif.read ? 'bg-gray-50' : 'bg-blue-50'}`}>
+            <div className={`mt-1 w-2.5 h-2.5 rounded-full ${notif.read ? 'bg-gray-300' : 'bg-blue-500'}`}></div>
+            <div>
+              <p className={`text-sm ${notif.read ? 'text-gray-600' : 'text-gray-800 font-semibold'}`}>{notif.message}</p>
+              <p className="text-xs text-gray-400 mt-1">{new Date(notif.createdAt).toLocaleString()}</p>
+            </div>
+          </div>
+        ))
+      ) : (
+        <p className="text-sm text-gray-500">You have no new notifications.</p>
+      )}
+    </div>
+    <div className="pt-6 mt-6 border-t border-gray-200 flex justify-end">
+        <button type="button" className="text-sm font-medium text-gray-600 hover:text-purple-600">
+            Mark all as read
+        </button>
+    </div>
+  </div>
 );
