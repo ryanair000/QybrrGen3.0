@@ -41,7 +41,7 @@ export default function HomePage({ posts: initialPosts }) { // Receive posts as 
                 We&apos;re all about building next-gen SaaS solutions that supercharge your business. Our team is pushing the boundaries of what&apos;s possible with artificial intelligence to create smart, scalable tools that make things faster, easier, and more efficient. Get ready to dive into the future of tech with us!
               </p>
               {/* Changed button background to purple */}
-              <a href="#" className="inline-block bg-purple-600 text-white px-5 py-2.5 rounded text-base font-medium hover:bg-purple-700 transition-colors">
+              <Link href="/products" className="inline-block bg-purple-600 text-white px-5 py-2.5 rounded text-base font-medium hover:bg-purple-700 transition-colors">
                 LEARN MORE
               </a>
           </div>
@@ -106,7 +106,7 @@ export default function HomePage({ posts: initialPosts }) { // Receive posts as 
                    <p className="text-md text-purple-700 font-medium mb-8">
                       Free for members + 7-day free trial on sign up!
                   </p>
-                  <Link href="https://biochef.netlify.app/" className="inline-block bg-blue-600 text-white px-6 py-3 rounded text-base font-medium hover:bg-blue-700 transition-colors shadow-md hover:shadow-lg">
+                  <Link href="https://biochef.netlify.app/" target="_blank" rel="noopener noreferrer" className="inline-block bg-blue-600 text-white px-6 py-3 rounded text-base font-medium hover:bg-blue-700 transition-colors shadow-md hover:shadow-lg">
                       Learn More & Get Started
                   </Link>
               </div>
