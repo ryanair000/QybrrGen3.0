@@ -295,7 +295,7 @@ const SubscriptionsContent = ({ subscriptions }) => {
               <div className="p-6 flex-grow">
                 <div className="flex justify-between items-start">
                   <h3 className="font-bold text-xl text-gray-900 mb-2">{sub.name}</h3>
-                  <span className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${sub.status === 'trialing' ? 'bg-blue-100 text-blue-800' : 'bg-green-100 text-green-800'}`}>
+                  <span className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${sub.status === 'trialing' ? 'bg-blue-500 text-white font-semibold' : 'bg-green-100 text-green-800'}`}>
                     {sub.status === 'trialing' ? 'Trial Active' : 'Active'}
                   </span>
                 </div>
