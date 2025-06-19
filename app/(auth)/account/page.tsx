@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabaseClient';
 import Image from 'next/image';
 import toast from 'react-hot-toast';
+import { sampleProducts } from '@/lib/products';
 
 const UserIcon = ({ className = 'w-6 h-6' }) => (
     <svg xmlns="http://www.w3.org/2000/svg" className={className} fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" /></svg>
@@ -274,29 +275,49 @@ const SubscriptionsContent = ({ subscriptions }) => {
     );
   }
 
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const year = String(date.getFullYear()).slice(-2);
+    return `${day}/${month}/${year}`;
+  };
+
   return (
     <div>
       <h2 className="text-2xl font-bold text-gray-800 mb-1">My Subscriptions</h2>
       <p className="text-sm text-gray-500 mb-6">Manage your product subscriptions and trials.</p>
-      <div className="space-y-4">
-        {subscriptions.map(sub => (
-          <div key={sub.productId} className="p-4 border border-gray-200 rounded-lg flex justify-between items-center">
-            <div>
-              <h3 className="font-semibold text-gray-800">{sub.name}</h3>
-              <p className={`text-sm ${sub.status === 'trialing' ? 'text-blue-600' : 'text-green-600'}`}>
-                Status: <span className="font-medium">{sub.status}</span>
-              </p>
-              {sub.status === 'trialing' && (
-                <p className="text-xs text-gray-500">
-                  Trial ends on: {new Date(sub.trialEndsAt).toLocaleDateString()}
-                </p>
-              )}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {subscriptions.map(sub => {
+          const product = sampleProducts.find(p => p.id === sub.productId);
+          return (
+            <div key={sub.productId} className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300 ease-in-out">
+              <div className="p-6">
+                <div className="flex justify-between items-start">
+                  <h3 className="font-bold text-xl text-gray-900 mb-2">{sub.name}</h3>
+                  <span className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${sub.status === 'trialing' ? 'bg-blue-100 text-blue-800' : 'bg-green-100 text-green-800'}`}>
+                    {sub.status === 'trialing' ? 'Trial Active' : 'Active'}
+                  </span>
+                </div>
+                {sub.status === 'trialing' && (
+                  <p className="text-sm text-gray-600 mb-4">
+                    Trial ends on: <span className="font-semibold text-gray-800">{formatDate(sub.trialEndsAt)}</span>
+                  </p>
+                )}
+                {product && (
+                  <a 
+                    href={product.href} 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="w-full text-center mt-4 inline-block bg-purple-600 text-white px-6 py-2 rounded-lg text-sm font-semibold hover:bg-purple-700 transition-colors duration-300"
+                  >
+                    Visit {product.name.split(' ')[0]}
+                  </a>
+                )}
+              </div>
             </div>
-            <button className="bg-gray-200 text-gray-700 px-4 py-1.5 rounded-md text-sm font-medium hover:bg-gray-300">
-                Manage
-            </button>
-          </div>
-        ))}
+          )
+        })}
       </div>
     </div>
   );
