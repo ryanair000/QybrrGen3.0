@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState, useRef } from 'react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import { supabase } from '@/lib/supabaseClient';
 import Image from 'next/image';
 import toast from 'react-hot-toast';
@@ -342,6 +343,8 @@ const SubscriptionsContent = ({ subscriptions }) => {
 const NotificationsContent = ({ notifications, user }) => {
     const [settings, setSettings] = useState(user.user_metadata.notification_settings || { product_updates: true, weekly_digest: false });
     const [loading, setLoading] = useState(false);
+    const [selectedNotification, setSelectedNotification] = useState(null);
+    const [localNotifications, setLocalNotifications] = useState(notifications || []);
 
     const handleSettingChange = (e) => {
         const { name, checked } = e.target;
@@ -360,52 +363,82 @@ const NotificationsContent = ({ notifications, user }) => {
         setLoading(false);
     };
 
+    const handleNotificationClick = (notification) => {
+        setSelectedNotification(notification);
+        if (!notification.read) {
+            const updatedNotifications = localNotifications.map(n => 
+                n.id === notification.id ? { ...n, read: true } : n
+            );
+            setLocalNotifications(updatedNotifications);
+            supabase.auth.updateUser({ data: { notifications: updatedNotifications } });
+        }
+    };
+
     return (
-        <div>
-            <h2 className="text-2xl font-bold text-gray-800 mb-1">Notifications</h2>
-            <p className="text-sm text-gray-500 mb-6">Manage your notification preferences.</p>
-            <form onSubmit={handleSettingsUpdate} className="space-y-5">
-                <div className="flex items-start">
-                    <div className="flex items-center h-5">
-                        <input id="product_updates" name="product_updates" type="checkbox" checked={settings.product_updates} onChange={handleSettingChange} className="focus:ring-purple-500 h-4 w-4 text-purple-600 border-gray-300 rounded" />
+        <>
+            <div>
+                <h2 className="text-2xl font-bold text-gray-800 mb-1">Notifications</h2>
+                <p className="text-sm text-gray-500 mb-6">Manage your notification preferences.</p>
+                <form onSubmit={handleSettingsUpdate} className="space-y-5">
+                    <div className="flex items-start">
+                        <div className="flex items-center h-5">
+                            <input id="product_updates" name="product_updates" type="checkbox" checked={settings.product_updates} onChange={handleSettingChange} className="focus:ring-purple-500 h-4 w-4 text-purple-600 border-gray-300 rounded" />
+                        </div>
+                        <div className="ml-3 text-sm">
+                            <label htmlFor="product_updates" className="font-medium text-gray-700">Product Updates</label>
+                            <p className="text-gray-500">Get notified about new products and feature updates.</p>
+                        </div>
                     </div>
-                    <div className="ml-3 text-sm">
-                        <label htmlFor="product_updates" className="font-medium text-gray-700">Product Updates</label>
-                        <p className="text-gray-500">Get notified about new products and feature updates.</p>
+                    <div className="flex items-start">
+                        <div className="flex items-center h-5">
+                            <input id="weekly_digest" name="weekly_digest" type="checkbox" checked={settings.weekly_digest} onChange={handleSettingChange} className="focus:ring-purple-500 h-4 w-4 text-purple-600 border-gray-300 rounded" />
+                        </div>
+                        <div className="ml-3 text-sm">
+                            <label htmlFor="weekly_digest" className="font-medium text-gray-700">Weekly Digest</label>
+                            <p className="text-gray-500">Receive a weekly summary of activity.</p>
+                        </div>
                     </div>
+                    <div className="pt-6 mt-6 border-t border-gray-200 flex justify-end">
+                        <button type="submit" disabled={loading} className="bg-purple-600 text-white px-5 py-2.5 rounded-md text-sm font-medium hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 disabled:bg-purple-300">
+                            {loading ? 'Saving...' : 'Save'}
+                        </button>
+                    </div>
+                </form>
+                
+                <h3 className="text-xl font-bold text-gray-800 mt-10 mb-4">Recent Notifications</h3>
+                <div className="space-y-4">
+                  {localNotifications && localNotifications.length > 0 ? (
+                    localNotifications.slice(0, 5).map(notif => (
+                      <div key={notif.id} onClick={() => handleNotificationClick(notif)} className={`p-4 rounded-lg flex items-start space-x-3 cursor-pointer transition-all duration-200 ${notif.read ? 'bg-gray-50 hover:bg-gray-100' : 'bg-blue-50 hover:bg-blue-100'}`}>
+                        <div className={`mt-1 w-2.5 h-2.5 rounded-full ${notif.read ? 'bg-gray-300' : 'bg-blue-500'}`}></div>
+                        <div>
+                          <p className={`text-sm ${notif.read ? 'text-gray-600' : 'text-gray-800 font-semibold'}`}>{notif.message}</p>
+                          <p className="text-xs text-gray-400 mt-1">{new Date(notif.createdAt).toLocaleString()}</p>
+                        </div>
+                      </div>
+                    ))
+                  ) : (
+                    <p className="text-sm text-gray-500">You have no new notifications.</p>
+                  )}
                 </div>
-                <div className="flex items-start">
-                    <div className="flex items-center h-5">
-                        <input id="weekly_digest" name="weekly_digest" type="checkbox" checked={settings.weekly_digest} onChange={handleSettingChange} className="focus:ring-purple-500 h-4 w-4 text-purple-600 border-gray-300 rounded" />
-                    </div>
-                    <div className="ml-3 text-sm">
-                        <label htmlFor="weekly_digest" className="font-medium text-gray-700">Weekly Digest</label>
-                        <p className="text-gray-500">Receive a weekly summary of activity.</p>
-                    </div>
-                </div>
-                <div className="pt-6 mt-6 border-t border-gray-200 flex justify-end">
-                    <button type="submit" disabled={loading} className="bg-purple-600 text-white px-5 py-2.5 rounded-md text-sm font-medium hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 disabled:bg-purple-300">
-                        {loading ? 'Saving...' : 'Save'}
-                    </button>
-                </div>
-            </form>
-            
-            <h3 className="text-xl font-bold text-gray-800 mt-10 mb-4">Recent Notifications</h3>
-            <div className="space-y-4">
-              {notifications && notifications.length > 0 ? (
-                notifications.slice(0, 5).map(notif => (
-                  <div key={notif.id} className={`p-4 rounded-lg flex items-start space-x-3 ${notif.read ? 'bg-gray-50' : 'bg-blue-50'}`}>
-                    <div className={`mt-1 w-2.5 h-2.5 rounded-full ${notif.read ? 'bg-gray-300' : 'bg-blue-500'}`}></div>
-                    <div>
-                      <p className={`text-sm ${notif.read ? 'text-gray-600' : 'text-gray-800 font-semibold'}`}>{notif.message}</p>
-                      <p className="text-xs text-gray-400 mt-1">{new Date(notif.createdAt).toLocaleString()}</p>
-                    </div>
-                  </div>
-                ))
-              ) : (
-                <p className="text-sm text-gray-500">You have no new notifications.</p>
-              )}
             </div>
-        </div>
+
+            {selectedNotification && (
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 transition-opacity duration-300" onClick={() => setSelectedNotification(null)}>
+                    <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md m-4 transform transition-all duration-300 scale-95 hover:scale-100" onClick={(e) => e.stopPropagation()}>
+                        <div className="p-6">
+                            <div className="flex justify-between items-center mb-4">
+                                <h4 className="text-lg font-bold text-gray-900">Notification Details</h4>
+                                <button onClick={() => setSelectedNotification(null)} className="text-gray-400 hover:text-gray-600">
+                                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                                </button>
+                            </div>
+                            <p className="text-gray-700 mb-4">{selectedNotification.message}</p>
+                            <p className="text-xs text-gray-400 text-right">Received on {new Date(selectedNotification.createdAt).toLocaleString()}</p>
+                        </div>
+                    </div>
+                </div>
+            )}
+        </>
     );
 };
