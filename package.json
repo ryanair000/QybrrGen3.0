@@ -43,6 +43,7 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-hook-form": "^7.49.3",
+    "react-hot-toast": "^2.5.2",
     "react-iframe": "^1.8.5",
     "react-refractor": "^2.1.7",
     "resend": "^4.5.1",
