@@ -24,7 +24,9 @@ export default function SignupPage() {
     } else if (authData.user) {
       console.log("Signup successful, user:", authData.user);
       toast.success("Signup successful! Please check your email to confirm your account.");
-      router.push('/confirm-email');
+      setTimeout(() => {
+        router.push('/confirm-email');
+      }, 2000); // 2-second delay before redirecting
     } else {
       toast.error("Signup initiated. If you don't receive a confirmation email, please try again.");
     }
