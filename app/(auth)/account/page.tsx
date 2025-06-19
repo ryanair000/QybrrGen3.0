@@ -291,8 +291,8 @@ const SubscriptionsContent = ({ subscriptions }) => {
         {subscriptions.map(sub => {
           const product = sampleProducts.find(p => p.id === sub.productId);
           return (
-            <div key={sub.productId} className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300 ease-in-out">
-              <div className="p-6">
+            <div key={sub.productId} className="bg-white rounded-xl shadow-md overflow-hidden flex flex-col hover:shadow-lg transition-shadow duration-300 ease-in-out">
+              <div className="p-6 flex-grow">
                 <div className="flex justify-between items-start">
                   <h3 className="font-bold text-xl text-gray-900 mb-2">{sub.name}</h3>
                   <span className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${sub.status === 'trialing' ? 'bg-blue-100 text-blue-800' : 'bg-green-100 text-green-800'}`}>
@@ -304,17 +304,23 @@ const SubscriptionsContent = ({ subscriptions }) => {
                     Trial ends on: <span className="font-semibold text-gray-800">{formatDate(sub.trialEndsAt)}</span>
                   </p>
                 )}
-                {product && (
-                  <a 
-                    href={product.href} 
-                    target="_blank" 
-                    rel="noopener noreferrer"
-                    className="w-full text-center mt-4 inline-block bg-purple-600 text-white px-6 py-2 rounded-lg text-sm font-semibold hover:bg-purple-700 transition-colors duration-300"
-                  >
-                    Visit {product.name.split(' ')[0]}
-                  </a>
-                )}
               </div>
+              {product && (
+                <div className="bg-gray-50 p-4 flex items-center space-x-3">
+                  <button
+                    onClick={() => toast('Redirecting to subscription page...')}
+                    className="flex-1 text-center bg-purple-600 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 transition-colors duration-300"
+                  >
+                    Subscribe
+                  </button>
+                  <button
+                    onClick={() => toast.success('Thank you for rating!')}
+                    className="flex-1 text-center bg-gray-200 text-gray-800 px-4 py-2 rounded-lg text-sm font-semibold hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-400 transition-colors duration-300"
+                  >
+                    Rate Product
+                  </button>
+                </div>
+              )}
             </div>
           )
         })}
