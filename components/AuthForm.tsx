@@ -14,6 +14,7 @@ export default function AuthForm({ formType }: AuthFormProps) {
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [username, setUsername] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
 
@@ -43,6 +44,11 @@ export default function AuthForm({ formType }: AuthFormProps) {
       const { error: signUpError } = await supabase.auth.signUp({
         email,
         password,
+        options: {
+          data: {
+            username: username,
+          },
+        },
       });
       if (signUpError) {
         setError(signUpError.message);
@@ -89,6 +95,28 @@ export default function AuthForm({ formType }: AuthFormProps) {
 
         <form onSubmit={handleFormSubmit} className="space-y-6">
           {error && <p className="text-red-500 text-sm text-center py-2">{error}</p>}
+          {!isLogin && (
+            <div>
+              <label
+                htmlFor="username"
+                className="block text-xs font-medium text-gray-700 mb-1"
+              >
+                Username*
+              </label>
+              <div className="mt-1">
+                <input
+                  id="username"
+                  name="username"
+                  type="text"
+                  autoComplete="username"
+                  required
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                  className="appearance-none block w-full px-3 py-2.5 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-400 focus:border-gray-400 sm:text-sm bg-white text-gray-900"
+                />
+              </div>
+            </div>
+          )}
           <div>
             <label
               htmlFor="email"
