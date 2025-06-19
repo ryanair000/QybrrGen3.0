@@ -37,7 +37,7 @@ export default function AuthForm({ formType }: AuthFormProps) {
       if (signInError) {
         setError(signInError.message);
       } else {
-        router.push("/");
+        router.push("/products");
         router.refresh();
       }
     } else {
