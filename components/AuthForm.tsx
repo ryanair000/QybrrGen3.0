@@ -3,27 +3,53 @@
 import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
+import { supabase } from "@/lib/supabaseClient";
 
 interface AuthFormProps {
   formType: "login" | "signup";
-  onSubmit: (data: { email: string; password: string }) => void;
 }
 
-export default function AuthForm({ formType, onSubmit }: AuthFormProps) {
-  const [activeTab, setActiveTab] = useState<"login" | "signup">(formType);
+export default function AuthForm({ formType }: AuthFormProps) {
+  const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState(""); // For signup
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [error, setError] = useState<string | null>(null);
 
-  const isLogin = activeTab === "login";
+  const isLogin = formType === "login";
 
-  const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setError(null);
+
     if (!isLogin && password !== confirmPassword) {
-      alert("Passwords do not match.");
+      setError("Passwords do not match.");
       return;
     }
-    onSubmit({ email, password });
+
+    if (isLogin) {
+      const { error: signInError } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+      if (signInError) {
+        setError(signInError.message);
+      } else {
+        router.push("/");
+        router.refresh();
+      }
+    } else {
+      const { error: signUpError } = await supabase.auth.signUp({
+        email,
+        password,
+      });
+      if (signUpError) {
+        setError(signUpError.message);
+      } else {
+        router.push("/confirm-email");
+      }
+    }
   };
 
   return (
@@ -38,30 +64,31 @@ export default function AuthForm({ formType, onSubmit }: AuthFormProps) {
 
         <div className="mb-8">
           <div className="flex">
-            <button
-              onClick={() => setActiveTab("login")}
+            <Link
+              href="/login"
               className={`pb-3 px-1 mr-6 text-sm font-medium focus:outline-none transition-colors duration-150
-                ${activeTab === "login"
+                ${isLogin
                   ? "border-b-2 border-gray-800 text-gray-800"
                   : "text-gray-500 hover:text-gray-700"
                 }`}
             >
               Log in
-            </button>
-            <button
-              onClick={() => setActiveTab("signup")}
+            </Link>
+            <Link
+              href="/signup"
               className={`pb-3 px-1 text-sm font-medium focus:outline-none transition-colors duration-150
-                ${activeTab === "signup"
+                ${!isLogin
                   ? "border-b-2 border-gray-800 text-gray-800"
                   : "text-gray-500 hover:text-gray-700"
                 }`}
             >
               Create account
-            </button>
+            </Link>
           </div>
         </div>
 
         <form onSubmit={handleFormSubmit} className="space-y-6">
+          {error && <p className="text-red-500 text-sm text-center py-2">{error}</p>}
           <div>
             <label
               htmlFor="email"
@@ -169,17 +196,6 @@ export default function AuthForm({ formType, onSubmit }: AuthFormProps) {
             </div>
         )}
 
-        <div className="mt-8 text-center">
-          <p className="text-sm text-gray-500">
-            {isLogin ? "Don't have an account?" : "Already have an account?"}{" "}
-            <button
-              onClick={() => setActiveTab(isLogin ? "signup" : "login")}
-              className="font-medium text-sky-600 hover:text-sky-500 focus:outline-none"
-            >
-              {isLogin ? "Create account" : "Log in"}
-            </button>
-          </p>
-        </div>
       </div>
 
       {/* Right Column: Image */}
