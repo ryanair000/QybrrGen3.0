@@ -7,6 +7,7 @@ import Header from "@/components/Header"; // Import the new Header
 // import NewsletterForm from "@/components/NewsletterForm"; // Added NewsletterForm import
 import { Github, Instagram, Linkedin, Youtube, /* Check Lucide for TikTok icon name, using a placeholder for now */ Users } from 'lucide-react'; // Users as placeholder for TikTok
 import Image from "next/image"; // Import Next.js Image component
+import Link from "next/link"; // Import Next.js Link component
 
 // Helper for social media icons (Heroicons - outline style)
 
