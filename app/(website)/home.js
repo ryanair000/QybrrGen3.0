@@ -43,7 +43,7 @@ export default function HomePage({ posts: initialPosts }) { // Receive posts as 
               {/* Changed button background to purple */}
               <Link href="/products" className="inline-block bg-purple-600 text-white px-5 py-2.5 rounded text-base font-medium hover:bg-purple-700 transition-colors">
                 LEARN MORE
-              </a>
+              </Link>
           </div>
           <div className="relative w-full aspect-video md:aspect-auto md:h-[400px] rounded-lg overflow-hidden shadow-md">
             <Image
