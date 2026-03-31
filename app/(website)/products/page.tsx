@@ -1,218 +1,166 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
-import Image from 'next/image';
+import React, { useEffect } from 'react';
 import Link from 'next/link';
 import AOS from 'aos';
 import 'aos/dist/aos.css';
-import { supabase } from '@/lib/supabaseClient';
+import { ArrowRight } from 'lucide-react';
 import { sampleProducts } from '@/lib/products';
-import toast from 'react-hot-toast';
-import TrialAuthModal from '@/components/TrialAuthModal';
+import { ArticleCard } from '@/components/ui/card-23';
+
+type Product = (typeof sampleProducts)[number];
+
+const cardAccents = ['violet', 'amber', 'emerald'] as const;
+
+function getPriceLabel(product: Product) {
+  if (product.price === 0) {
+    return 'Free access';
+  }
+
+  if (
+    product.memberPrice !== null &&
+    product.memberPrice < product.price &&
+    product.memberPrice === 0
+  ) {
+    return 'Included for members';
+  }
+
+  if (product.memberPrice !== null && product.memberPrice < product.price) {
+    return `$${product.memberPrice.toFixed(2)} member access`;
+  }
+
+  return `$${product.price.toFixed(2)} standard access`;
+}
+
+function getPriceDetail(product: Product) {
+  if (product.price === 0) {
+    return 'READY NOW';
+  }
+
+  if (product.memberPrice !== null && product.memberPrice < product.price) {
+    return `STANDARD ${`$${product.price.toFixed(2)}`}`;
+  }
+
+  return 'FULL ACCESS';
+}
 
 export default function ProductsPage() {
-  const [user, setUser] = useState(null);
-  const [subscriptions, setSubscriptions] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-
   useEffect(() => {
     AOS.init({
       duration: 1000,
       once: true,
     });
-
-    const fetchUser = async () => {
-      const { data, error } = await supabase.auth.getUser();
-      if (data?.user) {
-        setUser(data.user);
-        setSubscriptions(data.user.user_metadata.subscriptions || []);
-      }
-      setLoading(false);
-    };
-
-    fetchUser();
-
-    const { data: authListener } = supabase.auth.onAuthStateChange(
-      (_event, session) => {
-        const currentUser = session?.user;
-        setUser(currentUser ?? null);
-        setSubscriptions(currentUser?.user_metadata.subscriptions || []);
-      }
-    );
-
-    return () => {
-      authListener?.subscription.unsubscribe();
-    };
   }, []);
 
-  const handleClaimTrial = async (product) => {
-    if (!user) {
-      setIsModalOpen(true);
-      return;
-    }
-
-    const trialEndDate = new Date();
-    trialEndDate.setDate(trialEndDate.getDate() + 30);
-
-    const newSubscription = {
-      productId: product.id,
-      name: product.name,
-      status: 'trialing',
-      trialEndsAt: trialEndDate.toISOString(),
-    };
-
-    const newNotification = {
-      id: `trial-${product.id}-${Date.now()}`,
-      type: 'info',
-      message: `Your 30-day trial for ${product.name} has started.`,
-      read: false,
-      createdAt: new Date().toISOString(),
-    };
-
-    const currentSubscriptions = user.user_metadata.subscriptions || [];
-    const currentNotifications = user.user_metadata.notifications || [];
-
-    const { data, error } = await supabase.auth.updateUser({
-      data: {
-        subscriptions: [...currentSubscriptions, newSubscription],
-        notifications: [...currentNotifications, newNotification],
-      },
-    });
-
-    if (error) {
-      toast.error(error.message);
-    } else {
-      toast.success(`Trial for ${product.name} claimed!`);
-      setUser(data.user);
-      setSubscriptions(data.user.user_metadata.subscriptions);
-    }
-  };
-
-  const isTrialActive = (productId) => {
-    return subscriptions.some(sub => sub.productId === productId);
-  };
-
-  const ProductCardContent = ({ product }) => (
-    <>
-      {product.stockStatus && (
-        <span className="absolute top-2 right-2 inline-flex items-center rounded-md bg-red-50 px-2 py-1 text-xs font-medium text-red-700 ring-1 ring-inset ring-red-600/10 z-10">
-          {product.stockStatus}
-        </span>
-      )}
-      <div className="aspect-w-1 aspect-h-1 w-full overflow-hidden rounded-md bg-gray-200 group-hover:opacity-90 lg:aspect-none lg:h-60">
-        <Image
-          src={product.imageUrl}
-          alt={product.name}
-          width={400}
-          height={300}
-          className="h-full w-full object-cover object-center lg:h-full lg:w-full"
-        />
-      </div>
-      <div className="mt-4">
-        <h3 className="text-base font-medium text-gray-800 group-hover:text-purple-600">
-          {product.name}
-        </h3>
-        {product.trialInfo && (
-          <p className="mt-1 text-sm text-blue-600 font-medium">
-            {product.trialInfo}
-          </p>
-        )}
-      </div>
-    </>
-  );
-
   return (
-    <>
-      <div className="bg-white">
-        <div className="container mx-auto px-4 py-12 sm:px-6 lg:px-8">
-          <h1 className="text-3xl font-bold tracking-tight text-gray-900 mb-10 text-center">Our Products</h1>
+    <div className="relative overflow-hidden bg-[#f6f2eb]">
+      <div className="absolute inset-x-0 top-0 h-[28rem] bg-[linear-gradient(180deg,rgba(255,255,255,0.84),rgba(246,242,235,0)),radial-gradient(circle_at_top_right,rgba(251,191,36,0.12),transparent_28%),radial-gradient(circle_at_top_left,rgba(120,119,198,0.08),transparent_34%)]" />
 
-          <div className="grid grid-cols-1 gap-y-10 gap-x-6 sm:grid-cols-2 lg:grid-cols-3 xl:gap-x-8">
-            {sampleProducts.map((product) => {
-              const isSocioProduct = product.name === 'Socio - Snap, Caption, Share!';
-              return (
-                <div
-                  key={product.id}
-                  className="group bg-gray-50 p-4 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200 flex flex-col"
-                  data-aos="fade-up"
-                  data-aos-delay={Number(product.id) * 100}
-                >
-                  {isSocioProduct ? (
-                    <div className="block cursor-default">
-                      <ProductCardContent product={product} />
-                    </div>
-                  ) : (
-                    <Link
-                      href={product.href}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="block"
-                    >
-                      <ProductCardContent product={product} />
-                    </Link>
-                  )}
-
-                  <div className="mt-auto pt-4">
-                    <div className="mb-2">
-                        {product.price > 0 ? (
-                         <p className="text-lg font-semibold text-gray-900">
-                            {product.memberPrice !== null && product.memberPrice < product.price ? (
-                                <>
-                                    <span className="text-gray-500 line-through mr-2">${product.price.toFixed(2)}</span>
-                                    <span className="text-purple-700">${product.memberPrice.toFixed(2)} for members</span>
-                                </> 
-                            ) : (
-                               `$${product.price.toFixed(2)}`
-                            )}
-                         </p>
-                       ) : (
-                         <p className="text-lg font-semibold text-green-600">Free</p>
-                       )}
-                       {product.price === 0 && product.memberPrice !== null && product.memberPrice > 0 && (
-                           <p className="text-sm text-purple-700">${product.memberPrice.toFixed(2)} for members</p>
-                       )}
-                    </div>
-
-                    {!loading && (
-                      <div className="mt-2">
-                          {isTrialActive(product.id) ? (
-                            <div className="space-y-2">
-                              <button
-                                disabled
-                                className="w-full bg-green-100 text-green-800 py-2 px-4 rounded-md text-sm font-medium"
-                              >
-                                Trial Active
-                              </button>
-                              {isSocioProduct && (
-                                <a
-                                  href="https://socioaiapp.netlify.app/"
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                  className="block w-full text-center bg-blue-500 text-white py-2 px-4 rounded-md text-sm font-medium hover:bg-blue-600 transition-colors"
-                                >
-                                  Visit Socio Now!
-                                </a>
-                              )}
-                            </div>
-                          ) : (
-                            <button
-                              onClick={() => handleClaimTrial(product)}
-                              className="w-full bg-purple-600 text-white py-2 px-4 rounded-md text-sm font-medium hover:bg-purple-700 transition-colors"
-                            >
-                              Claim Trial
-                            </button>
-                          )}
-                      </div>
-                    )}
-                  </div>
-                </div>
-              );
-            })}
+      <div className="container relative mx-auto px-4 pb-20 pt-14 sm:px-6 lg:px-8 lg:pt-20">
+        <section className="grid gap-12 lg:grid-cols-[minmax(0,1.2fr)_minmax(280px,0.8fr)] lg:items-start">
+          <div className="max-w-3xl">
+            <p className="text-xs font-semibold uppercase tracking-[0.26em] text-black/42">
+              QybrrLabs Product Suite
+            </p>
+            <h1 className="mt-6 max-w-4xl text-4xl font-semibold tracking-[-0.04em] text-[#121212] sm:text-5xl lg:text-6xl">
+              AI products designed for actual workflows, with a quieter and more intentional presentation.
+            </h1>
+            <p className="mt-6 max-w-2xl text-base leading-8 text-black/62 sm:text-lg">
+              The page now leans more editorial than promotional. Less chrome,
+              fewer boxes, better hierarchy, and product cards that feel like
+              complete objects instead of stitched-together sections.
+            </p>
+            <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-3 text-sm text-black/54">
+              <span className="inline-flex items-center gap-2">
+                <span className="h-2 w-2 rounded-full bg-[#121212]" />
+                {sampleProducts.length} live products
+              </span>
+              <span>Integrated pricing and launch cues</span>
+              <span>Cleaner single-surface cards</span>
+            </div>
           </div>
+
+          <div className="space-y-7 pt-1 lg:pl-10">
+            <div>
+              <p className="text-sm font-medium uppercase tracking-[0.2em] text-black/35">
+                What Changed
+              </p>
+              <p className="mt-3 text-3xl font-semibold tracking-[-0.05em] text-[#121212]">
+                {sampleProducts.length}
+              </p>
+              <p className="mt-2 max-w-sm text-sm leading-7 text-black/55">
+                Distinct product surfaces, each with integrated access details
+                and a direct launch path.
+              </p>
+            </div>
+            <div>
+              <p className="text-sm font-medium uppercase tracking-[0.2em] text-black/35">
+                Design Direction
+              </p>
+              <p className="mt-3 max-w-sm text-lg font-medium leading-8 text-[#121212]">
+                More restraint, better spacing, and fewer decorative borders competing for attention.
+              </p>
+            </div>
+            <Link
+              href="/blog"
+              className="inline-flex items-center gap-2 text-sm font-semibold text-[#121212] transition-transform duration-300 hover:translate-x-0.5"
+            >
+              Explore the Blog
+              <ArrowRight className="h-4 w-4" />
+            </Link>
+          </div>
+        </section>
+
+        <section className="mt-16 grid grid-cols-1 gap-8 lg:grid-cols-3">
+          {sampleProducts.map((product: Product, index) => (
+            <div
+              key={product.id}
+              className={
+                index === 1
+                  ? 'lg:translate-y-8'
+                  : index === 2
+                    ? 'lg:translate-y-16'
+                    : ''
+              }
+            >
+              <Link
+                href={product.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={`Open ${product.name}`}
+                className="block h-full"
+                data-aos="fade-up"
+                data-aos-delay={index * 120}
+              >
+                <ArticleCard
+                  tag={product.cardMeta.tag}
+                  date={product.cardMeta.date}
+                  title={product.cardMeta.headline || product.name}
+                  description={product.cardMeta.description}
+                  imageUrl={product.cardMeta.imageUrl}
+                  imageAlt={product.cardMeta.imageAlt}
+                  location={product.cardMeta.location}
+                  priceLabel={getPriceLabel(product)}
+                  priceDetail={getPriceDetail(product)}
+                  ctaLabel={product.ctaLabel}
+                  accent={cardAccents[index % cardAccents.length]}
+                  className="max-w-none"
+                />
+              </Link>
+            </div>
+          ))}
+        </section>
+
+        <div className="mt-20 flex flex-col gap-3 text-sm leading-7 text-black/56 sm:flex-row sm:items-center sm:justify-between">
+          <p className="max-w-2xl">
+            Each card now carries its own hierarchy, access context, and launch
+            intent without relying on extra bordered sections below it.
+          </p>
+          <p className="text-xs font-semibold uppercase tracking-[0.22em] text-black/34">
+            Quiet layout. Stronger cards.
+          </p>
         </div>
       </div>
-      <TrialAuthModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
-    </>
+    </div>
   );
-} 
+}

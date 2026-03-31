@@ -82,7 +82,7 @@ export default function HomePage({ posts: initialPosts }) { // Receive posts as 
                     Easily capture moments, generate engaging captions with AI, and share instantly. Perfect for boosting your social media presence effortlessly.
                 </p>
                  <p className="text-md text-blue-700 font-medium mb-8">
-                    Free for members + 1 month trial on sign up!
+                    Included for members and ready to use today.
                 </p>
                 <Link href="/products" className="inline-block bg-purple-600 text-white px-6 py-3 rounded text-base font-medium hover:bg-purple-700 transition-colors shadow-md hover:shadow-lg">
                     Learn More & Get Started
@@ -104,7 +104,7 @@ export default function HomePage({ posts: initialPosts }) { // Receive posts as 
                       Craft captivating bios for any platform instantly. Our AI helps you stand out and make a memorable first impression.
                   </p>
                    <p className="text-md text-purple-700 font-medium mb-8">
-                      Free for members + 7-day free trial on sign up!
+                      Available now for members and individual users.
                   </p>
                   <Link href="https://biochef.netlify.app/" target="_blank" rel="noopener noreferrer" className="inline-block bg-blue-600 text-white px-6 py-3 rounded text-base font-medium hover:bg-blue-700 transition-colors shadow-md hover:shadow-lg">
                       Learn More & Get Started

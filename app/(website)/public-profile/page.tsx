@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { supabase } from '@/lib/supabase/client';
+import { isSupabaseConfigured, supabase } from '@/lib/supabase/client';
 import { User } from '@supabase/supabase-js';
 
 // Define a type for the profile data for better type safety
@@ -24,11 +24,19 @@ export default function ProfilePage() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    const supabaseClient = supabase;
+
+    if (!supabaseClient) {
+      setLoading(false);
+      setError('Supabase is not configured yet.');
+      return;
+    }
+
     const fetchUserProfile = async () => {
       setLoading(true);
       setError(null);
 
-      const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+      const { data: { session }, error: sessionError } = await supabaseClient.auth.getSession();
 
       if (sessionError) {
         console.error('Error getting session:', sessionError);
@@ -47,7 +55,7 @@ export default function ProfilePage() {
 
       // Fetch profile data from 'profiles' table
       try {
-        const { data: profileData, error: profileError } = await supabase
+        const { data: profileData, error: profileError } = await supabaseClient
           .from('profiles')
           .select('*')
           .eq('id', session.user.id)

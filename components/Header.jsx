@@ -3,26 +3,41 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { supabase } from '@/lib/supabaseClient';
+import { isSupabaseConfigured, supabase } from '@/lib/supabaseClient';
 
 export default function Header() {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    if (!supabase) {
+      setLoading(false);
+      return;
+    }
+
+    let isMounted = true;
+
     const fetchUser = async () => {
       const { data: { user } } = await supabase.auth.getUser();
-      setUser(user);
-      setLoading(false);
+      if (isMounted) {
+        setUser(user);
+        setLoading(false);
+      }
     };
 
     fetchUser();
 
-    const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
+    const { data: authListener } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (!isMounted) {
+        return;
+      }
+
       setUser(session?.user ?? null);
+      setLoading(false);
     });
 
     return () => {
+      isMounted = false;
       authListener.subscription.unsubscribe();
     };
   }, []);
@@ -60,7 +75,11 @@ export default function Header() {
           </div>
         </div>
         <div className="hidden md:flex items-center space-x-4">
-          {loading ? (
+          {!isSupabaseConfigured ? (
+            <span className="text-sm font-medium text-amber-700">
+              Auth setup needed
+            </span>
+          ) : loading ? (
             <div className="h-8 w-48 animate-pulse bg-gray-200 rounded-md"></div>
           ) : user ? (
             <>

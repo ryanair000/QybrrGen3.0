@@ -4,7 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { supabase } from "@/lib/supabaseClient";
+import { isSupabaseConfigured, supabase } from "@/lib/supabaseClient";
 
 interface AuthFormProps {
   formType: "login" | "signup";
@@ -19,10 +19,17 @@ export default function AuthForm({ formType }: AuthFormProps) {
   const [error, setError] = useState<string | null>(null);
 
   const isLogin = formType === "login";
+  const authUnavailableMessage =
+    "Authentication is unavailable until Supabase is configured.";
 
   const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError(null);
+
+    if (!supabase) {
+      setError(authUnavailableMessage);
+      return;
+    }
 
     if (!isLogin && password !== confirmPassword) {
       setError("Passwords do not match.");
@@ -95,6 +102,11 @@ export default function AuthForm({ formType }: AuthFormProps) {
 
         <form onSubmit={handleFormSubmit} className="space-y-6">
           {error && <p className="text-red-500 text-sm text-center py-2">{error}</p>}
+          {!isSupabaseConfigured && (
+            <p className="text-amber-700 text-sm text-center py-2">
+              {authUnavailableMessage}
+            </p>
+          )}
           {!isLogin && (
             <div>
               <label
@@ -204,6 +216,7 @@ export default function AuthForm({ formType }: AuthFormProps) {
           <div className="pt-2">
             <button
               type="submit"
+              disabled={!isSupabaseConfigured}
               className="w-full flex justify-center py-2.5 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-sky-500 hover:bg-sky-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-sky-500"
             >
               {isLogin ? "Log in" : "Create account"}

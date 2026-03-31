@@ -1,9 +1,9 @@
+import { GlassBlogCard } from "@/components/ui/glass-blog-card-shadcnui";
 import { client } from "@/lib/sanity/client";
 import { postquery } from "@/lib/sanity/groq";
 import Link from "next/link";
-import Image from "next/image";
 import { urlForImage } from "@/lib/sanity/image";
-import { format } from 'date-fns';
+import { format } from "date-fns";
 
 // Define types for our data based on the GROQ query
 interface Author {
@@ -28,81 +28,6 @@ interface Post {
   body?: any; // Full body for detailed view, excerpt for card
 }
 
-// Re-usable BlogCard component (can be moved to its own file later)
-const BlogCard = ({ post }: { post: Post }) => {
-  const authorImageSrc = post.author?.image ? urlForImage(post.author.image)?.src : undefined;
-  const postImageSrc = post.mainImage ? urlForImage(post.mainImage)?.src : undefined;
-
-  return (
-    <article className="flex flex-col overflow-hidden rounded-lg shadow-lg bg-white dark:bg-gray-800 hover:shadow-xl transition-shadow duration-300">
-      {postImageSrc && (
-        <Link href={`/post/${post.slug?.current}`} className="block">
-          <div className="aspect-w-16 aspect-h-9">
-             <Image
-                src={postImageSrc}
-                alt={post.title || 'Blog post image'}
-                className="object-cover w-full h-full"
-                width={800}
-                height={450}
-            />
-          </div>
-        </Link>
-      )}
-      <div className="flex flex-1 flex-col justify-between p-6">
-        <div className="flex-1">
-          <p className="text-sm text-gray-500 dark:text-gray-400">
-            <time dateTime={post.publishedAt}>{format(new Date(post.publishedAt), 'MMMM d, yyyy')}</time>
-          </p>
-          <Link href={`/post/${post.slug?.current}`} className="mt-2 block">
-            <h3 className="text-xl font-semibold text-gray-900 dark:text-white hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
-              {post.title}
-            </h3>
-            {post.excerpt && (
-              <p className="mt-3 text-base text-gray-500 dark:text-gray-400 line-clamp-3">
-                {post.excerpt}
-              </p>
-            )}
-          </Link>
-        </div>
-        <div className="mt-6 flex items-center">
-          {post.author && (
-            <div className="flex-shrink-0">
-              <span className="sr-only">{post.author.name}</span>
-              <Image
-                className="h-10 w-10 rounded-full"
-                src={authorImageSrc || '/avatar-placeholder.png'}
-                alt={post.author.name || 'Author'}
-                width={40}
-                height={40}
-              />
-            </div>
-          )}
-          {post.author && (
-            <div className="ml-3">
-              <p className="text-sm font-medium text-gray-900 dark:text-white">
-                {post.author.name}
-              </p>
-              {/* <p className="text-sm text-gray-500 dark:text-gray-400">Contributor</p> */}
-            </div>
-          )}
-        </div>
-        {post.categories && post.categories.length > 0 && (
-          <div className="mt-4 flex flex-wrap gap-2">
-            {post.categories.map((category) => (
-              <Link key={category.slug?.current} href={`/blog/category/${category.slug?.current}`}>
-                <span className="inline-flex items-center rounded-full bg-indigo-100 dark:bg-indigo-800 px-3 py-0.5 text-xs font-medium text-indigo-800 dark:text-indigo-200 hover:bg-indigo-200 dark:hover:bg-indigo-700 transition-colors">
-                  {category.title}
-                </span>
-              </Link>
-            ))}
-          </div>
-        )}
-      </div>
-    </article>
-  );
-};
-
-
 // Category Filters Component (can be moved to its own file later)
 const CategoryFilters = ({ categories }: { categories: Category[] }) => {
   const allCategories = [{ title: "All Posts", slug: { current: "" } }, ...categories];
@@ -120,6 +45,49 @@ const CategoryFilters = ({ categories }: { categories: Category[] }) => {
       </div>
     </div>
   );
+};
+
+const fallbackPostImages = [
+  "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=1200&q=80",
+  "https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=1200&q=80",
+  "https://images.unsplash.com/photo-1518770660439-4636190af475?w=1200&q=80",
+];
+
+const defaultAuthorAvatar = "https://github.com/shadcn.png";
+
+const getPlainTextFromPortableText = (body: any) => {
+  if (!Array.isArray(body)) {
+    return "";
+  }
+
+  return body
+    .filter((block: any) => block?._type === "block" && Array.isArray(block.children))
+    .map((block: any) =>
+      block.children.map((child: any) => child?.text || "").join("")
+    )
+    .join(" ")
+    .trim();
+};
+
+const generateExcerpt = (post: Post, length = 30) => {
+  if (post.excerpt?.trim()) {
+    return post.excerpt.trim();
+  }
+
+  const plainText = getPlainTextFromPortableText(post.body);
+  if (!plainText) {
+    return "Explore the full article for insights, ideas, and updates from QybrrLabs.";
+  }
+
+  const words = plainText.split(/\s+/).filter(Boolean);
+  return `${words.slice(0, length).join(" ")}${words.length > length ? "..." : ""}`;
+};
+
+const estimateReadTime = (content: string) => {
+  const wordCount = content.split(/\s+/).filter(Boolean).length;
+  const minutes = Math.max(1, Math.ceil(wordCount / 180));
+
+  return `${minutes} min read`;
 };
 
 
@@ -152,21 +120,9 @@ export default async function BlogPage() {
   const categoryQuery = `*[_type == "category"]{title, slug}`;
   const categories: Category[] = await client!.fetch(categoryQuery);
 
-  // A simple function to generate an excerpt if not provided by GROQ or if it's too short
-  const generateExcerpt = (body: any, length: number = 30): string => {
-    if (!body) return "";
-    // Assuming body is Sanity's portable text
-    const plainText = body
-      .filter((block: any) => block._type === 'block' && block.children)
-      .map((block: any) => block.children.map((child: any) => child.text).join(''))
-      .join('\\n\\n'); // Join blocks with double newline, then take first N words
-    
-    return plainText.split(' ').slice(0, length).join(' ') + (plainText.split(' ').length > length ? "..." : "");
-  };
-
   const postsWithProperExcerpts = posts.map(post => ({
     ...post,
-    excerpt: post.excerpt || generateExcerpt(post.body) // Use provided excerpt or generate one
+    excerpt: generateExcerpt(post),
   }));
 
 
@@ -185,10 +141,40 @@ export default async function BlogPage() {
         {categories.length > 0 && <CategoryFilters categories={categories} />}
 
         {postsWithProperExcerpts && postsWithProperExcerpts.length > 0 ? (
-          <div className="mx-auto grid max-w-none grid-cols-1 gap-x-8 gap-y-12 sm:grid-cols-2 lg:grid-cols-3">
-            {postsWithProperExcerpts.map((post) => (
-              <BlogCard key={post._id} post={post} />
-            ))}
+          <div className="mx-auto grid max-w-none grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
+            {postsWithProperExcerpts.map((post, index) => {
+              const postImageSrc = post.mainImage
+                ? urlForImage(post.mainImage)?.src || fallbackPostImages[index % fallbackPostImages.length]
+                : fallbackPostImages[index % fallbackPostImages.length];
+              const authorImageSrc = post.author?.image
+                ? urlForImage(post.author.image)?.src || defaultAuthorAvatar
+                : defaultAuthorAvatar;
+              const publishedDate = post.publishedAt
+                ? format(new Date(post.publishedAt), "MMMM d, yyyy")
+                : "Coming soon";
+
+              return (
+                <GlassBlogCard
+                  key={post._id}
+                  title={post.title}
+                  excerpt={post.excerpt}
+                  image={postImageSrc}
+                  author={{
+                    name: post.author?.name || "QybrrLabs Team",
+                    avatar: authorImageSrc,
+                  }}
+                  date={publishedDate}
+                  readTime={estimateReadTime(post.excerpt || post.title || "")}
+                  tags={
+                    post.categories?.length
+                      ? post.categories.map((category) => category.title).slice(0, 2)
+                      : ["Insights", "QybrrLabs"]
+                  }
+                  href={post.slug?.current ? `/post/${post.slug.current}` : undefined}
+                  className="h-full max-w-none"
+                />
+              );
+            })}
           </div>
         ) : (
           <p className="text-center text-gray-600 dark:text-gray-300">No blog posts found.</p>

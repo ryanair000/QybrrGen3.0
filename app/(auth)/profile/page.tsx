@@ -1,6 +1,6 @@
 'use client';
 
-import { supabase } from "@/lib/supabaseClient";
+import { isSupabaseConfigured, supabase } from "@/lib/supabaseClient";
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
@@ -15,8 +15,15 @@ export default function ProfilePage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    const supabaseClient = supabase;
+
+    if (!supabaseClient) {
+      setLoading(false);
+      return;
+    }
+
     const fetchUserProfile = async () => {
-      const { data: { user }, error } = await supabase.auth.getUser();
+      const { data: { user }, error } = await supabaseClient.auth.getUser();
 
       if (error) {
         console.error("Error fetching user:", error.message);
@@ -34,7 +41,13 @@ export default function ProfilePage() {
   }, [router]);
 
   const handleSignOut = async () => {
-    const { error } = await supabase.auth.signOut();
+    const supabaseClient = supabase;
+
+    if (!supabaseClient) {
+      return;
+    }
+
+    const { error } = await supabaseClient.auth.signOut();
     if (error) {
       console.error("Error signing out:", error.message);
     } else {
@@ -46,6 +59,16 @@ export default function ProfilePage() {
     return (
       <div className="flex items-center justify-center min-h-screen bg-gray-50 dark:bg-gray-900">
         <p className="text-gray-700 dark:text-gray-300">Loading profile...</p>
+      </div>
+    );
+  }
+
+  if (!isSupabaseConfigured) {
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-gray-50 px-4 text-center dark:bg-gray-900">
+        <p className="text-gray-700 dark:text-gray-300">
+          Add `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY` to enable profile access.
+        </p>
       </div>
     );
   }
