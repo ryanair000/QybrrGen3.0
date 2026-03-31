@@ -8,7 +8,8 @@ const nextConfig = {
     remotePatterns: [
       { hostname: "cdn.sanity.io" },
       { hostname: "via.placeholder.com" },
-      { hostname: "images.unsplash.com" }
+      { hostname: "images.unsplash.com" },
+      { hostname: "images.pexels.com" }
     ]
   },
   typescript: {

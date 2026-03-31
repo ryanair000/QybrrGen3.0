@@ -38,8 +38,8 @@ export async function GET() {
     const posts = await client.fetch(postquery);
 
     posts.forEach((post: any) => {
-      const postUrl = `${SITE_URL}/blog/${post.slug?.current}`;
-      let description = post.excerpt;
+      const postUrl = `${SITE_URL}/post/${post.slug?.current}`;
+      let description = post.metaDescription || post.excerpt;
       // If no excerpt, try to generate a short one from the body (plain text)
       if (!description && post.body) {
         const firstTextBlock = post.body.find((block:any) => block._type === 'block' && block.children?.some((child:any) => child.text));

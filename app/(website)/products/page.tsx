@@ -8,11 +8,19 @@ import 'aos/dist/aos.css';
 import { supabase } from '@/lib/supabaseClient';
 import { sampleProducts } from '@/lib/products';
 import toast from 'react-hot-toast';
+import type { User } from '@supabase/supabase-js';
 import TrialAuthModal from '@/components/TrialAuthModal';
 
+type ProductSubscription = {
+  productId: string;
+  name: string;
+  status: string;
+  trialEndsAt?: string;
+};
+
 export default function ProductsPage() {
-  const [user, setUser] = useState(null);
-  const [subscriptions, setSubscriptions] = useState([]);
+  const [user, setUser] = useState<User | null>(null);
+  const [subscriptions, setSubscriptions] = useState<ProductSubscription[]>([]);
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -46,7 +54,7 @@ export default function ProductsPage() {
     };
   }, []);
 
-  const handleClaimTrial = async (product) => {
+  const handleClaimTrial = async (product: (typeof sampleProducts)[number]) => {
     if (!user) {
       setIsModalOpen(true);
       return;
@@ -89,7 +97,7 @@ export default function ProductsPage() {
     }
   };
 
-  const isTrialActive = (productId) => {
+  const isTrialActive = (productId: string) => {
     return subscriptions.some(sub => sub.productId === productId);
   };
 

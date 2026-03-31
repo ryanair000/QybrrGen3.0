@@ -67,6 +67,9 @@ export default function Header() {
               <span className="text-sm font-medium text-gray-700">
                 Welcome, {user.user_metadata.username || user.email}
               </span>
+              <Link href="/admin/blog-generator" className="text-sm font-medium text-gray-700 hover:text-purple-600">
+                AI PUBLISHER
+              </Link>
               <Link href="/account" className="bg-purple-600 text-white px-4 py-1.5 rounded text-sm font-medium hover:bg-purple-700 transition-colors">
                 MY ACCOUNT
               </Link>

@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { supabase } from "@/lib/supabaseClient";
 
 interface AuthFormProps {
@@ -12,6 +12,7 @@ interface AuthFormProps {
 
 export default function AuthForm({ formType }: AuthFormProps) {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [username, setUsername] = useState("");
@@ -19,6 +20,13 @@ export default function AuthForm({ formType }: AuthFormProps) {
   const [error, setError] = useState<string | null>(null);
 
   const isLogin = formType === "login";
+  const nextPath = (() => {
+    const candidate = searchParams.get("next");
+    if (!candidate || !candidate.startsWith("/")) {
+      return "/products";
+    }
+    return candidate;
+  })();
 
   const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -37,7 +45,7 @@ export default function AuthForm({ formType }: AuthFormProps) {
       if (signInError) {
         setError(signInError.message);
       } else {
-        router.push("/products");
+        router.push(nextPath);
         router.refresh();
       }
     } else {
@@ -71,7 +79,7 @@ export default function AuthForm({ formType }: AuthFormProps) {
         <div className="mb-8">
           <div className="flex">
             <Link
-              href="/login"
+              href={nextPath === "/products" ? "/login" : `/login?next=${encodeURIComponent(nextPath)}`}
               className={`pb-3 px-1 mr-6 text-sm font-medium focus:outline-none transition-colors duration-150
                 ${isLogin
                   ? "border-b-2 border-gray-800 text-gray-800"
@@ -81,7 +89,7 @@ export default function AuthForm({ formType }: AuthFormProps) {
               Log in
             </Link>
             <Link
-              href="/signup"
+              href={nextPath === "/products" ? "/signup" : `/signup?next=${encodeURIComponent(nextPath)}`}
               className={`pb-3 px-1 text-sm font-medium focus:outline-none transition-colors duration-150
                 ${!isLogin
                   ? "border-b-2 border-gray-800 text-gray-800"

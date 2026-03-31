@@ -8,6 +8,7 @@
 // } from "@/lib/sanity/config";
 import { type DocumentDefinition } from "sanity";
 import { type StructureResolver } from "sanity/desk";
+import ChatToPublishDesk from "./ChatToPublishDesk";
 
 export const singletonPlugin = (types: string[]) => {
   return {
@@ -70,8 +71,21 @@ export const pageStructure = (
         )
     );
 
+    const aiPublisherItem = S.listItem()
+      .title("AI Blog Publisher")
+      .child(
+        S.component(ChatToPublishDesk)
+          .id("ai-blog-publisher")
+          .title("AI Blog Publisher")
+      );
+
     return S.list()
       .title("Content")
-      .items([...singletonItems, S.divider(), ...defaultListItems]);
+      .items([
+        ...singletonItems,
+        S.divider(),
+        aiPublisherItem,
+        ...defaultListItems
+      ]);
   };
 };

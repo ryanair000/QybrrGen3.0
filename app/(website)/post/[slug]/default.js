@@ -69,8 +69,13 @@ export default function Post(props) {
           <h1 className="text-brand-primary mb-4 mt-2 text-center text-3xl font-semibold tracking-tight dark:text-white lg:text-4xl lg:leading-snug">
             {post.title}
           </h1>
+          {post.subtitle && (
+            <p className="mx-auto mb-5 max-w-2xl text-center text-lg leading-8 text-gray-600 dark:text-gray-300">
+              {post.subtitle}
+            </p>
+          )}
 
-          <div className="mt-3 flex items-center justify-center space-x-3 text-gray-500 ">
+          <div className="mt-3 flex flex-wrap items-center justify-center gap-3 text-gray-500 ">
             {post.author && (
               <div className="flex items-center gap-3">
                 <div className="relative h-10 w-10 flex-shrink-0">
@@ -92,18 +97,28 @@ export default function Post(props) {
                       {post.author.name}
                     </Link>
                   </span>
-                  <span className="ml-2 flex items-center space-x-2">
-                    <time
-                      className="text-gray-500 dark:text-gray-400"
-                      dateTime={post?.publishedAt || post._createdAt}>
-                      {formatDate(post?.publishedAt || post._createdAt)}
-                    </time>
-                    <span className="text-gray-500 dark:text-gray-400">· {post.estReadingTime || "5"} min read</span>
-                  </span>
                 </div>
               </div>
             )}
+            <span className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
+              <time dateTime={post?.publishedAt || post._createdAt}>
+                {formatDate(post?.publishedAt || post._createdAt)}
+              </time>
+              <span>· {post.estReadingTime || "5"} min read</span>
+            </span>
           </div>
+
+          {post.keywords && post.keywords.length > 0 && (
+            <div className="mt-5 flex flex-wrap items-center justify-center gap-2">
+              {post.keywords.map(keyword => (
+                <span
+                  key={keyword}
+                  className="rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-xs font-medium uppercase tracking-wide text-slate-600 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300">
+                  {keyword}
+                </span>
+              ))}
+            </div>
+          )}
         </div>
       </Container>
 

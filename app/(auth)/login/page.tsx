@@ -1,7 +1,12 @@
 "use client";
 
+import { Suspense } from "react";
 import AuthForm from "@/components/AuthForm";
 
 export default function LoginPage() {
-  return <AuthForm formType="login" />;
+  return (
+    <Suspense>
+      <AuthForm formType="login" />
+    </Suspense>
+  );
 } 

@@ -15,7 +15,7 @@ import {
   getAll,
   searchquery
 } from "./groq";
-import { createClient } from "next-sanity";
+import { createClient } from "@sanity/client";
 
 if (!projectId) {
   console.error(

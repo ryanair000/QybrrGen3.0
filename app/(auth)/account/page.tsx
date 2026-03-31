@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { supabase } from '@/lib/supabaseClient';
 import Image from 'next/image';
 import toast from 'react-hot-toast';
+import type { User } from '@supabase/supabase-js';
 import { sampleProducts } from '@/lib/products';
 
 const UserIcon = ({ className = 'w-6 h-6' }) => (
@@ -27,7 +28,7 @@ const SubscriptionIcon = ({ className = 'w-5 h-5' }) => (
 
 export default function AccountPage() {
   const router = useRouter();
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('profile');
 
@@ -81,6 +82,10 @@ export default function AccountPage() {
 
   if (loading) {
     return <div className="flex justify-center items-center h-screen bg-gray-50"><div className="text-lg font-medium text-gray-600">Loading Account...</div></div>;
+  }
+
+  if (!user) {
+    return null;
   }
 
   return (
@@ -141,12 +146,12 @@ const SidebarButton = ({ icon, label, isActive, onClick }) => (
   </button>
 );
 
-const ProfileContent = ({ user }) => {
+const ProfileContent = ({ user }: { user: User }) => {
     const [username, setUsername] = useState(user.user_metadata.username || '');
-    const [avatarFile, setAvatarFile] = useState(null);
+    const [avatarFile, setAvatarFile] = useState<File | null>(null);
     const [avatarPreview, setAvatarPreview] = useState(user.user_metadata.avatar_url || null);
     const [loading, setLoading] = useState(false);
-    const avatarInputRef = useRef(null);
+    const avatarInputRef = useRef<HTMLInputElement | null>(null);
 
     const handleAvatarChange = (e) => {
         if (e.target.files && e.target.files[0]) {
@@ -203,7 +208,7 @@ const ProfileContent = ({ user }) => {
                             onError={(e) => e.currentTarget.src = '/img/3d-rendering-cute-robot.jpg'}
                         />
                         <input type="file" accept="image/*" onChange={handleAvatarChange} ref={avatarInputRef} className="hidden" />
-                        <button type="button" onClick={() => avatarInputRef.current.click()} className="bg-white py-2 px-3 border border-gray-300 rounded-md shadow-sm text-sm leading-4 font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500">
+                        <button type="button" onClick={() => avatarInputRef.current?.click()} className="bg-white py-2 px-3 border border-gray-300 rounded-md shadow-sm text-sm leading-4 font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500">
                             Change
                         </button>
                     </div>
@@ -276,7 +281,7 @@ const PasswordContent = () => {
     );
 };
 
-const SubscriptionsContent = ({ subscriptions }) => {
+const SubscriptionsContent = ({ subscriptions }: { subscriptions: any[] }) => {
   if (!subscriptions || subscriptions.length === 0) {
     return (
       <div>
@@ -340,11 +345,11 @@ const SubscriptionsContent = ({ subscriptions }) => {
   );
 };
 
-const NotificationsContent = ({ notifications, user }) => {
+const NotificationsContent = ({ notifications, user }: { notifications: any[]; user: User }) => {
     const [settings, setSettings] = useState(user.user_metadata.notification_settings || { product_updates: true, weekly_digest: false });
     const [loading, setLoading] = useState(false);
-    const [selectedNotification, setSelectedNotification] = useState(null);
-    const [localNotifications, setLocalNotifications] = useState(notifications || []);
+    const [selectedNotification, setSelectedNotification] = useState<any | null>(null);
+    const [localNotifications, setLocalNotifications] = useState<any[]>(notifications || []);
 
     const handleSettingChange = (e) => {
         const { name, checked } = e.target;
